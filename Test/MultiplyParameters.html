@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<body>
+</body>
+<script>
+//https://zhuanlan.zhihu.com/p/23007032
+
+function findMax() {
+  var i;
+  var max = -Infinity;
+  for(i = 0; i < arguments.length; i++) {
+    if (arguments[i] > max) {
+      max = arguments[i];
+    }
+  }
+  return max;
+}
+//No other parameters
+document.write("<br />//No prime parameters<br />");
+x= findMax(4, 5, 6);
+document.write(x);
+
+function Extend(Arg,Arg2,...rest){
+  document.write("<br /><br />");
+  document.write("<br />//all parameters<br />");
+  document.write(...arguments);
+
+  document.write("<br /><br />");
+  document.write("<br />//rest reloaded parameters<br />");
+  //all the parameters
+  document.write(...rest);
+
+  document.write("<br /><br />");
+  document.write("<br />// rest reloaded parameters in array<br />");
+  document.write(rest);
+
+  document.write("<br /><br />");
+  document.write("<br />//first reloaded parameter<br />");
+  //have parameters in array
+  document.write(rest[1]);
+  //output first parameter in array
+}
+Extend(1,2,3,4,5,6);
+//Have indicated parameters
+
+
+
+
+
+
+</script>
