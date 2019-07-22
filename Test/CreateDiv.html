@@ -1,0 +1,35 @@
+<html>
+<style>
+.board{
+  border-style:solid;
+  /* width:200px; */
+  padding:5px;
+}
+
+</style>
+<body>
+<div id='0' class='board'>111
+<div id='1' class='board'>asd</div>
+</div>
+</body>
+<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+<script>
+$();
+
+function AddDiv(addPlace,elementId,content,contentClass,append=true,type='div'){
+  //addPlace=appendto id=?
+  $addcontent=$('<'+type+' id='+elementId+'>'+content+'</'+type+'>').addClass(contentClass);
+  if(append==true){
+    $('#'+addPlace).append($addcontent);
+  }else{
+    $('#'+addPlace).prepend($addcontent);
+  }
+}
+
+
+
+</script>
+</html>

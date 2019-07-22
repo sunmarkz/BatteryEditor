@@ -1,0 +1,56 @@
+<html>
+<body>
+
+</body>
+
+<!-- <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script> -->
+<script>
+
+var T = new String('{12{11}{23{123213}{11}4}56}');
+// x= T.indexOf('{');
+// y= T.indexOf('}');
+// z= T.substring(x+1,y);
+//   var i=0;
+// function CUT(Text){
+//
+//   document.write("&emsp;".repeat(i)+Text+'<br>');
+//   if(Text.indexOf('{')!=-1&&Text.lastIndexOf("}")!=-1){
+//     ++i;
+//     var AP=new Array(Text.substring(0,Text.indexOf('{')),Text.substring(Text.indexOf('{')+1,Text.lastIndexOf('}')));
+//     //document.write("&emsp;".repeat(i)+'AP:'+AP+'<br>');
+//     Pieces=Text.slice(Text.indexOf('{')+1,Text.lastIndexOf('}'));
+//       ++i;
+//       return(CUT(Pieces));
+//   }
+// }
+// CUT(T);
+
+function findInArray(content,Key){
+  var output= new Array(1);
+  var x = 0;
+  var y =0;
+while(x!=-1 && y<200){
+  output.push(content.indexOf(Key,output[output.length-1]+1));
+  x=content.indexOf(Key,output[output.length-1]+1);
+  y++;
+  // console.log(x);
+};
+output.shift();
+
+return output
+};
+
+var start = findInArray(T,"{");
+var end = findInArray(T,"}").reverse();
+console.log(T);
+console.log(start+'|'+end);
+var i=2;
+console.log(T.substring(start[i],end[i]+1));
+
+
+
+</script>
+</html>

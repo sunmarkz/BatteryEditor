@@ -53,17 +53,22 @@
 </body>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.4/TweenMax.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.4/utils/Draggable.min.js'></script>
+<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
 <script>
 var Root = SVG
 
 var FRAME_ID = new Array;
 
-FRAME_ID[0] = 1;
+FRAME_ID[0] = 0;
 function GenerateFrame(OBJECT){
     var _object = document.getElementById(OBJECT);
     Draggable.create(_object, {
       bounds: "svg",
-      onDragEnd: function() {
+
+      onDragStart: function() {
         DUPLICATE(this.target.id)
       }
     });
@@ -71,17 +76,20 @@ function GenerateFrame(OBJECT){
 
 function DUPLICATE(ElementID) {
   var newFRAME =document.getElementById(ElementID).cloneNode(true);
+  //key clone method;
+
   var ID = 'k' + String(FRAME_ID.length);
   Root.appendChild(newFRAME);
+  
   newFRAME.id = ID;
   GenerateFrame(ID);
-  FRAME_ID.push(FRAME_ID.length++);
+  FRAME_ID.push(+FRAME_ID.length);
 }
 
 
 
 
-GenerateFrame('head');
+GenerateFrame('FRAME');
 
 </script>
 

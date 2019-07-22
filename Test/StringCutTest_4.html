@@ -1,0 +1,77 @@
+<html>
+<body></body>
+<script>
+var st="{";
+var ed="}";
+var T = new String('{12{23{123213}4}56}');
+
+console.log(T);
+
+function findInArray(content,Key){
+  var output= new Array(1);
+  var x = 0;
+  var y =0;
+while(x!=-1 && y<200){
+  output.push(content.indexOf(Key,output[output.length-1]+1));
+  x=content.indexOf(Key,output[output.length-1]+1);
+  y++;
+};
+output.shift();
+return output
+};
+
+// when act in lastloop will read {} continue
+function Lastloop(content){
+  sta=findInArray(content,st);
+  console.log(sta);
+  end=findInArray(content,ed);
+  var outlet = new Array();
+  for(var i =0;i<sta.length;i++){
+    outlet.push(content.substring(sta[i],end[i]+1));
+    console.log(outlet);
+  }  return outlet;
+}
+var limit=10;
+function NODE(VAL){
+  this.left=null;
+  this.right=null;
+  this.content=VAL;
+}
+
+var testlisht=new Array();
+
+function BLOCK_ (VAL){
+this.left=null;
+this.content =VAL;
+this.right=null;
+};
+BLOCK_.prototype.addnew = function(VAL_){
+  var ss= 0;
+  var se=0;
+  var ss2=0;
+  var ee=0;
+  ss= VAL_.content.indexOf(st);
+  se=VAL_.content.indexOf(ed);
+  ee=VAL_.content.lastIndexOf(ed)+1;
+  ss2=VAL_.content.indexOf(st,ss);
+  var CONTENT_=VAL_.content.substring(ss,ee)
+
+  if(ss2<se){
+    // if { between {:
+    this.content.addnew(new BLOCK(CONTENT_));
+  }  else {
+    lastloop(CONTENT_);
+  }
+};
+
+
+
+
+
+
+var A= new BLOCK_ ("2");
+var B = new BLOCK_ (A);
+A.addnew(T);
+
+</script>
+</html>

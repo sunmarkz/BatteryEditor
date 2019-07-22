@@ -1,0 +1,71 @@
+<html>
+<body></body>
+<script>
+var st="{";
+var ed="}";
+var T = new String('{12{11}{23{123213}{11}4}56}');
+
+console.log(T);
+function findInArray(content,Key){
+  var output= new Array(1);
+  var x = 0;
+  var y =0;
+while(x!=-1 && y<200){
+  output.push(content.indexOf(Key,output[output.length-1]+1));
+  x=content.indexOf(Key,output[output.length-1]+1);
+  y++;
+};
+output.shift();
+return output
+};
+
+// when act in lastloop will read {} continue
+function Lastloop(content){
+  sta=findInArray(content,st);
+  end=findInArray(content,ed);
+  var outlet = new array();
+  for(var x =0;i<sta.length;i++){
+    outlet.push(content.substring(sta[i],end[i]));
+  }
+  return outlet;
+
+}
+
+function NODE(VAL){
+  this.left=null;
+  this.leftI=null;
+  this.right=null;
+  this.rightI=null;
+  this.content=VAL;
+  //check whether is last content
+  if (this.content.indexOf(st)==-1){
+
+    return (this.content);
+  }
+  else{
+    this.leftI=this.content.indexOf(st);
+      // Check whethre is last loop, by check is there two continue {
+    if (this.content.indexOf(ed)>this.content.indexOf(st,this.leftI)!=-1){
+      //if it isnt last loop: splite by first{ and last}
+
+      this.leftI=this.content.indexOf(st,this.leftI)+1;
+      this.left=this.content.substring(1,this.leftI);
+      this.rightI=this.content.lastIndexOf(ed);
+      this.content=this.content.substring(this.leftI,this.rightI);
+      this.right=this.content.substring(this.rightI,this.content.length);
+      console.log('ISNT LAST LOOP'+this.content);
+      NODE(this.content);
+  }
+    //if yes: it is last loop, include more than one content loop
+    else {
+      console.log("last");
+      return(Lastloop(this.content));
+  }
+
+  }
+}
+//console.log(NODE(T));
+NODE(T);
+
+</script>
+</html>

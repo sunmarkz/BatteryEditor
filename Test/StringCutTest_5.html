@@ -1,0 +1,66 @@
+<html>
+<body></body>
+<script>
+var st="{";
+var ed="}";
+var T = new String('{{}{}{{}{}}}');
+
+function findInArray(content,Key){
+  var output= new Array(1);
+  var block=new Array();
+  var x = 0;
+  var y =0;
+while(x!=-1 && y<200){
+  output.push(content.indexOf(Key,output[output.length-1]+1));
+  x=content.indexOf(Key,output[output.length-1]+1);
+  y++;
+};
+output.shift();
+return output
+};
+
+var Left=new Array();
+var Right=new Array();
+_Left=findInArray(T,st);
+_Right=findInArray(T,ed);
+
+console.log(_Left);
+console.log(_Right);
+function Matching(Left,Right){
+  var result=new Array();
+  //Check full brackets, if not wont run, in case while user typing.
+  if(Left.length==Right.length){
+    var Size=Left.length;
+    outter:for (var rt = 0; rt < Size ;rt++) {
+      inner: for (var lt = 0; lt < Size; lt++) {
+        if(rt+1<Size){
+          if (Right[rt]>Left[lt]&&Right[rt]<Left[lt+1]){
+            block=[Left[lt],Right[rt]]
+            result.push(block);
+            Right.splice(rt,1);
+            Left.splice(lt,1);
+            Size--;
+            break inner;
+          }
+        }else {
+          break outter;
+        }
+      }
+    }if(Size>0){
+      for (var i = 0; i < Size; i++) {
+        block=[Left[i],Right[Size-(i+1)]];
+        result.push(block);
+      }
+    }
+  }
+  return(result);
+}
+
+// TEST=Matching(_Left,_Right);
+console.log(Matching(_Left,_Right));
+
+
+
+
+</script>
+</html>

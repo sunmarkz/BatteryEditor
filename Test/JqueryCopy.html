@@ -1,0 +1,27 @@
+<html>
+<body>
+  <div id="test" height="20" wow="success">hey<div>
+</body>
+
+<script src="../library/jquery-3.2.1.min.js"></script>
+<script>
+$hello = $('#test').clone(true);
+//$hello.clone(true);
+
+
+document.write(document.getElementById('test').id+'<br>');
+document.write("get id by JQuery :"+$('div').attr('id'));
+// how to get attr from element
+
+
+document.write('<br>get height: '+$('div').height()+'<br>');
+
+//document.write($('div').attr('wow','asd'))
+$hello.attr('id','asd');
+document.write($hello.attr('id'))
+
+document.write($('#test').attr('id'));
+$('body').append($hello);
+
+</script>
+</html>

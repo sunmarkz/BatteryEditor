@@ -1,0 +1,72 @@
+<html>
+<body></body>
+<script>
+var st="{";
+var ed="}";
+var T = new String('aaaaaaa{AA{A}{SSS}{{SSS}{SSS}}SS}');
+
+function findInArray(content,Key){
+  var output= new Array(1);
+  var block=new Array();
+  var x = 0;
+  var y =0;
+  while(x!=-1 && y<200){
+  output.push(content.indexOf(Key,output[output.length-1]+1));
+  x=content.indexOf(Key,output[output.length-1]+1);
+  y++;
+};
+output.shift();
+return output
+};
+
+var Left=new Array();
+var Right=new Array();
+_Left=findInArray(T,st);
+_Right=findInArray(T,ed);
+
+function Matching(Left,Right){
+  var Left=Left;
+  var Right=Right
+  var All=Left.concat(Right);
+  All.sort();
+All.unshift(All.pop());
+console.log(All);
+for(j in All){
+  document.write(j);
+  console.log(All[j]);
+}
+  var output=new Array();
+  var outputFront=new Array//buffe for last arrays
+
+  for (i in All) {
+    //scan each index
+    if(All[i]==Left[0]){
+      //stack left
+      Left.shift();//remove from left list
+      output.push(All[i]);// push into stack
+    }
+    else if(All[i]==Right[0]){
+      //when read right bracket
+        Right.shift();//remove from right list
+        if(typeof(output[output.length-1])=='number'){
+          //when bracket continued {}
+          output.push([output.pop(),All[i]]);
+          //push into stack([last index, index])
+        }
+        else {
+          // when last stack is Array
+          outputFront=[];//reset outputFront
+          while(typeof(output[output.length-1])!='number'){
+            outputFront.push(output.pop());
+          }//when stack last one still array, pop to buffe
+          outputFront.reverse();//pop from end to beginning, so need to reverse
+          output.push([output.pop(),outputFront,All[i]]);
+          //push to stack endding
+        }
+    }
+  }
+  return(output);
+}
+console.log(Matching(_Left,_Right));
+</script>
+</html>
