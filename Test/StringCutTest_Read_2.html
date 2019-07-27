@@ -10,22 +10,32 @@
 <div id ='base'></div>
 </body>
 <script src="../library/jquery-3.2.1.min.js"></script>
-
 <script>
 $();
-function AddDiv(addPlace,elementId,content,contentClass,append=true,type='div'){
+function AddDiv(addPlace,elementId,content,append='append',contentClass='board',type='div'){
   //addPlace=appendto id=?
   $addcontent=$('<'+type+' id='+elementId+'>'+content+'</'+type+'>').addClass(contentClass);
-  if(append==true){
+  if(append=='append'){
     $('#'+addPlace).append($addcontent);
-  }else{
+  }else if (append=='after') {
+    $('#'+addPlace).after($addcontent);
+  }else if (append=='prepend') {
     $('#'+addPlace).prepend($addcontent);
-  }
+  }else if (append=='before') {
+      $('#'+addPlace).before($addcontent);}
 }
 
 var st="{";
 var ed="}";
-var T = new String('aaaaaaa{AAa{12A}11{SSS}12{{SSS}1{SSS}}SS}');
+var T = new String('a{AAAA{AA}11{SSSS}12{{SSS}1{123}{SSS}}SS}');
+function LastIndexArray(_input,Key){
+  for (k in _input){
+    if (_input[_input.length-k-1]==Key){
+      return(_input.length-k-1);
+    }
+  }
+}
+
 function findInArray(content,Key){
   var output= new Array(1);
   var block=new Array();
@@ -44,42 +54,55 @@ var Left=new Array();
 var Right=new Array();
 _Left=findInArray(T,st);
 _Right=findInArray(T,ed);
-
+console.log('L:',_Left,'R:',_Right);
 
 function Matching(Left,Right){
-  var Left=Left;
-  var Right=Right;
-  var temp;
-  var RightTemp=new Array();
-  var LeftTemp=new Array();
-  var All=Left.concat(Right);
-  console.log(All);
-  All.sort();
-  All.unshift(All.pop());
-  var output=new Array();
-  var outputFront=new Array//buffe for last arrays
+  this.Left=Left;
+  this.Right=Right;
+  var RightStack=new Array();
+  var LeftStack=new Array();
+  this.LEFT=LeftStack;
+  this.RIGHT=RightStack;
+  var All=this.Left.concat(Right);
+  All.sort(function(a, b){return a - b});
   for (i in All) {
-    //scan each index
-    if(All[i]==Left[0]){
-      //stack left
-      console.log(LeftTemp);
-
-      LeftTemp.push(Left.shift());
-    }else if (All[i]==Right[0]){
-        RightTemp.push(0);
-        //when read right bracket
-        RightTemp[Left.indexOf(All[i])]=Right.pop();
-        LeftTemp.pop();
-      }
+    if(All[i]==this.Left[0]){
+      LeftStack.push(this.Left.shift());
+      RightStack.push(-2);
     }
-    return(RightTemp);
+    else if (All[i]==this.Right[0]){
+      RightStack[LastIndexArray(RightStack,-2)]=this.Right.shift();
+    }else{
+      document.write('Error');
+      break;
+    }
+  }
+    //return(RightStack);
+    //console.log(LeftStack);
+  };
+
+Matching.prototype.Show = function (Text) {
+  console.log('111????',this.LEFT);
+  for (var i = 0; i < this.LEFT.length; i++) {
+    if(i==0){
+      console.log('i=0');
+      AddDiv('base',this.LEFT[i],Text.substring(this.LEFT[i]+1,this.LEFT[i+1]));
+      AddDiv('base','0_head',Text.substring(0,this.LEFT[i]),'before','none');
+    }else if (this.RIGHT[i]>this.RIGHT[i-1]) {
+      console.log('up');
+      AddDiv(this.LEFT[i-1],this.LEFT[i],Text.substring(this.LEFT[i]+1,this.RIGHT[i]),'after');
+    }else{
+      AddDiv(this.LEFT[i-1],this.LEFT[i],Text.substring(this.LEFT[i]+1,this.RIGHT[i]));
+      //AddDiv($('#'+this.LEFT[i-1]).parent().attr('id'),this.LEFT[i],'test:'+this.LEFT[i],false);
+    }
   }
 
+};
 
+// A=Matching(_Left,_Right);
+var A =new Matching(_Left,_Right);
 
-
-A=Matching(_Left,_Right);
-console.log(A);
+A.Show(T);
 
 //read(A,'base',T);
 
