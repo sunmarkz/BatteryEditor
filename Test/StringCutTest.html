@@ -1,0 +1,141 @@
+<html>
+<style>
+  .board {
+    border-style: solid;
+    /* width:200px; */
+    padding: 5px;
+  }
+</style>
+
+<body>
+  <div id ='editor'></div>
+  <button id='get'>get content</button>
+  <div id ='base'></div>
+</body>
+<script src="../library/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="C:\Users\sunmarkz\Documents\Server\BatteryEditor\library\wangEditor-3.1.1\release\wangEditor.js"></script>
+<script>
+  $();
+  var st = "{";
+  var ed = "}";
+  var T = new String('a{Head_A{A}Head_B{B}Head_C{Head_D{D}Head_E{E}Head_F{F}End_F}End_C}');
+
+  function LastIndexArray(_input, Key) {
+    for (k in _input) {
+      if (_input[_input.length - k - 1] == Key) {
+        return (_input.length - k - 1);
+      }
+    }
+  }
+
+
+
+  function findInArray(content, Key) {
+    var output = new Array(1);
+    var block = new Array();
+    var x = 0;
+    var y = 0;
+    while (x != -1 && y < 200) {
+      output.push(content.indexOf(Key, output[output.length - 1] + 1));
+      x = content.indexOf(Key, output[output.length - 1] + 1);
+      y++;
+    };
+    output.shift();
+    return output
+  };
+
+  function Textfilter(Source,Start,End){
+    this.result=Source.substring(Start,End);
+    if(this.result.indexOf('<br>')==0){
+      this.result=this.result.substring(4,this.result.length-1);
+    }
+    if(this.result.lastIndexOf('<br>')>=this.result.length-5){
+      this.result=this.result.substring(0,this.result.lastIndexOf('<br>'))
+    }
+    return(this.result);
+  }
+
+  function AddDiv(addPlace, elementId, content, append = 'append', contentClass ='board', type = 'div') {
+    //$addcontent=$('<div id='+ elementId + '>'+elementId+'</div>');
+    $addcontent=$('<' + type + ' id=' + elementId + '>' + content + '</' + type + '>').addClass(contentClass);
+    if (append == 'append') {
+      $('#' + addPlace).append($addcontent);
+    } else if (append == 'after') {
+      $('#' + addPlace).after($addcontent);
+    } else if (append == 'prepend') {
+      $('#' + addPlace).prepend($addcontent);
+    } else if (append == 'before') {
+      $('#' + addPlace).before($addcontent);
+    }
+  }
+
+  function Matching(Input) {
+    this.Text=Input.replace('/\n/g','<br>')
+    this.Left = findInArray(Input, st);
+    this.Right = findInArray(Input, ed);
+    RightStack = new Array();
+    LeftStack = new Array();
+    this.LEFT = LeftStack;
+    this.RIGHT = RightStack;
+    All = this.Left.concat(this.Right);
+    All.sort(function(a, b) {
+      return a - b
+    });
+    for (i in All) {
+      if (All[i] == this.Left[0]) {
+        LeftStack.push(this.Left.shift());
+        RightStack.push(-2);
+      } else if (All[i] == this.Right[0]) {
+        RightStack[LastIndexArray(RightStack, -2)] = this.Right.shift();
+      } else {
+        document.write('Error');
+        break;
+      }
+    }
+  };
+
+  Matching.prototype.Show = function() {
+    for (var i = 0; i < this.LEFT.length; i++) {
+      if (i == 0) {
+        console.log('i=0');
+        AddDiv('base', '0_base', '<b>'+Textfilter(this.Text,0, this.LEFT[i]), 'append', 'none');
+        AddDiv('0_base', this.LEFT[i],Textfilter(this.Text,this.LEFT[i]+1,this.LEFT[i + 1]));
+      } else if (this.RIGHT[i] > this.RIGHT[i - 1]) {//continue div
+        if (All[All.indexOf(this.RIGHT[i])]>All[All.indexOf(this.LEFT[i])+1]) {
+          //whether new frame have more than one div
+          AddDiv(this.LEFT[i - 1], this.LEFT[i], Textfilter(this.Text,this.LEFT[i] + 1,All[All.indexOf(this.LEFT[i])+1]), 'after');
+        }
+        else {
+          //frame have only one content
+          AddDiv(this.LEFT[i - 1], this.LEFT[i], Textfilter(this.Text,this.LEFT[i]+1,this.RIGHT[i]), 'after');
+        }
+      } else {//new layer
+        if(this.Text.substring(this.LEFT[i] + 1,this.RIGHT[i]).indexOf(st)==-1){
+          AddDiv(this.LEFT[i - 1], this.LEFT[i],Textfilter(this.Text,this.LEFT[i] + 1,this.RIGHT[i]));
+        }else {
+          AddDiv(this.LEFT[i - 1], this.LEFT[i], Textfilter(this.Text,this.LEFT[i]+1,this.LEFT[i + 1]));
+        }
+      }
+    }
+
+    for (var j = 0; j < RightStack.length; j++) {
+      if (All[All.indexOf(this.RIGHT[j])]-All[All.indexOf(this.RIGHT[j])+1]<0) {
+        $('#'+this.LEFT[j]).after('<span>'+Textfilter(this.Text,All[All.indexOf(this.RIGHT[j])]+1,All[All.indexOf(this.RIGHT[j])+1])+'</span>');
+      }
+    }
+
+    //document.write(this.Text);
+  };
+
+  var E=window.wangEditor
+  var editor = new E('#editor');
+  editor.create();
+  document.getElementById('get').addEventListener('click',function(){
+    alert(editor.txt.html());
+    var a = new Matching(editor.txt.html());
+    a.Show();
+  })
+
+</script>
+
+</html>
