@@ -14,17 +14,19 @@ Canvas.height=window.innerHeight;
 Canvas.width=window.innerWidth; 
 d = Canvas.getContext('2d');
 
+
 var content=[
     {x:10, y:30, width:30, height:100},
-    {x:50, y:50, width:100, height:100},
-    
+    {x:50, y:50, width:100, height:100},    
 ];
 
+DetectandUpdate();
 // Click Eventlistener:
 Canvas.addEventListener('click',function(e){
     DetectandUpdate(e.pageX,e.pageY);
 })
 function DetectandUpdate(x,y){
+    d.clearRect(0,0,Canvas.width,Canvas.height);
     content.forEach(function(list){
         d.beginPath();
         d.rect(list.x,list.y,list.width,list.height);
