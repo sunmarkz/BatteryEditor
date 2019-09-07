@@ -1,0 +1,39 @@
+<html>
+<body>
+<canvas id = "MyCanvas" width="100%" height="100%" stroke='black'>
+
+</canvas>
+</body>
+<script>
+    
+// Initialization
+var Canvas = document.getElementById('MyCanvas');
+var body = document.querySelector('body');
+var draw=Canvas.getContext('2d');
+Canvas.height=window.innerHeight;
+Canvas.width=window.innerWidth; 
+d = Canvas.getContext('2d');
+
+var content=[
+    {x:10, y:30, width:30, height:100},
+    {x:50, y:50, width:100, height:100},
+    
+];
+
+// Click Eventlistener:
+Canvas.addEventListener('click',function(e){
+    DetectandUpdate(e.pageX,e.pageY);
+})
+function DetectandUpdate(x,y){
+    content.forEach(function(list){
+        d.beginPath();
+        d.rect(list.x,list.y,list.width,list.height);
+        d.stroke();
+        if(d.isPointInPath(x,y)){
+            d.fillStyle='grey'
+            d.fillRect(list.x,list.y,list.width,list.height);
+        }
+    })   
+}
+</script>
+</html>
