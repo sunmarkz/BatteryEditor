@@ -22,14 +22,13 @@ function Canv(canvas,contentList){
 }
 Canv.prototype.clear = function(){
     d.clearRect(0, 0, Canvas.width, Canvas.height);
-    console.log('clear--------');
     
 }
 
 Canv.prototype.redraw = function(){
     this.clear();
     this.list.forEach(function(j){
-        console.log('c.redraw:',j.selected);
+    //console.log('c.redraw:',j.selected);
         
         j.draw();
     })
@@ -76,16 +75,9 @@ diagram.push(new content(200,300,50,50,3))
 
 var c = new Canv(d,diagram);
 c.redraw();
-// Click Eventlistener:
-// Canvas.addEventListener('click',function(e){
-//     ClickEvent(e.pageX,e.pageY);
-// });
-
 //Drag EventListener
 Canvas.onmousedown = function(e){
-    c.clear;
-    console.log('mousedown',e.pageX,e.pageY);
-    
+    c.clear;    
     //Iteration to find out which one is the actived element
     diagram.forEach(function(i){
         
@@ -115,35 +107,9 @@ Canvas.onmousedown = function(e){
             i.selected = false;
         }
         c.redraw();
-
-
-
     });
-    // c.redraw;
 }
 
-
-
-//Click function
-/*
-function ClickEvent(x,y){
-    console.log('clickEvent');
-    
-    // Clear Canvas
-    c.clear();
-    // Redraw content
-    diagram.forEach(function(i){
-    // what forEach return is content in list, not index!
-    i.draw()
-        if(d.isPointInPath(x,y)&&i.draggingTime==0){
-            i.selected=true;
-            i.draw();
-            i.selected=false;
-            }
-    }) 
-}
-
-*/
 
 </script>
 </html>
