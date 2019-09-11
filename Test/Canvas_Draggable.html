@@ -62,12 +62,7 @@ content.prototype.draw = function(){
     d.rect(this.x, this.y, this.width, this.height);
     d.stroke();
 }
-
-
-
 //---------------------------------------------
-
-
 var diagram=[];
 diagram.push(new content(10, 30, 30, 100,1));
 diagram.push(new content(50, 50, 100, 100,2)); 
@@ -80,9 +75,7 @@ Canvas.onmousedown = function(e){
     c.clear;    
     //Iteration to find out which one is the actived element
     diagram.forEach(function(i){
-        
         i.draw()
-        
         if (d.isPointInPath(e.pageX, e.pageY)) {
         //from here is the one actived 
         var offsetX = i.x - e.pageX;
@@ -90,7 +83,6 @@ Canvas.onmousedown = function(e){
         i.dragging=true;
         i.selected = true;        
         i.draw()
-
         Canvas.addEventListener('mousemove',function(j){
             
             if(i.dragging==true){
@@ -109,7 +101,5 @@ Canvas.onmousedown = function(e){
         c.redraw();
     });
 }
-
-
 </script>
 </html>
