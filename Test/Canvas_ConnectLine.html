@@ -1,0 +1,420 @@
+<html>
+<body>
+<canvas id = "MyCanvas" width="100%" height="100%" stroke='black'>
+
+</canvas>
+</body>
+<script>
+    
+// Initialization
+var Canvas = document.getElementById('MyCanvas');
+var body = document.querySelector('body');
+var draw=Canvas.getContext('2d');
+Canvas.height=window.innerHeight;
+Canvas.width=window.innerWidth; 
+d = Canvas.getContext('2d');
+
+// Package Canvas draw function
+function Canv(canvas,contentList){
+    this.onDrag=false;
+    this.Board = canvas;
+    this.list=contentList;
+    this.onCreate=false;
+    this.onSelection = false;
+    this.onControl=null;
+    this.selectedElements = [];
+    
+
+}
+
+Canv.prototype.refreshSelected = function(){
+    var selectedElements=new Array;
+    this.list.forEach(
+        function(i){
+            if(i.selected) {selectedElements.push(i);}
+        }
+    )
+    this.selectedElements=selectedElements;
+}
+Canv.prototype.clear = function(){
+    d.clearRect(0, 0, Canvas.width, Canvas.height);
+    
+}
+
+Canv.prototype.redraw = function(){
+    this.clear();
+    this.list.forEach(function(i){
+        i.Draw_Connection();
+        i.draw();
+    })
+}
+
+
+
+Canv.prototype.resetSelect = function(){
+    this.list.forEach(function(i){
+        i.selected=false;
+        i.state_onControl=false; // reset onControl statement
+    })
+    this.selectedElements = [];
+
+}
+Canv.prototype.selectList = function(){
+    var s = [];
+    this.list.forEach(function(i){
+        if(i.selected){
+            s.push(i);
+        }
+    })
+    return(s);
+}
+Canv.prototype.isOnElement = function(e){
+    Board.clear();
+    var result;
+
+    this.list.forEach(function(i,j){
+        i.draw();
+        if(d.isPointInPath(e.pageX,e.pageY)){ 
+            result={element:i , index:j}
+            return false;// escape forEach
+        }
+    });
+    Board.redraw();
+    return result;   
+}
+
+Canv.prototype.isOnControl = function(e){
+   
+        if ((e.pageX - this.onControl.left.x) * (e.pageX - this.onControl.left.x) + (e.pageY - this.onControl.left.y) * (e.pageY - this.onControl.left.y)<=16*16) {
+            console.log('left');
+            
+            return ('left');
+        }
+
+
+        if ((e.pageX - this.onControl.right.x) * (e.pageX - this.onControl.right.x) + (e.pageY - this.onControl.right.y) * (e.pageY - this.onControl.right.y) <= 16 * 16) {
+            console.log('right');
+            
+            return ('right');
+        }
+    }
+    
+
+
+
+content.prototype.Draw_onControl = function () {
+        d.fillStyle = "white";
+         d.lineWidth = 2;
+        d.beginPath();
+        //left control bar
+        d.arc(this.left.x, this.left.y, 8, 0, Math.PI * 2);
+        d.stroke();
+        d.fill();
+        d.closePath();
+
+        d.beginPath();
+        d.arc(this.right.x ,this.right.y, 8, 0, Math.PI * 2);
+        d.stroke();
+        d.fill();
+        d.closePath();
+}
+
+content.prototype.Draw_Connection= function(input_left=null,input_right=null){
+        d.lineWidth = 1;
+        var left = this.left;
+        var right = this.right;
+
+        if(input_left||input_right){
+            d.beginPath();
+            d.setLineDash([2,2]);
+            if(input_left){
+                d.moveTo(left.x, left.y);
+                d.lineTo(input_left.x, input_left.y);
+                d.stroke();
+            }
+            if(input_right){
+                d.moveTo(right.x, right.y);
+                d.lineTo(input_right.x, input_right.y);
+                d.stroke();
+
+            }
+
+        }
+        
+
+        if(this.left_ConnectTo){
+        this.left_ConnectTo.forEach(
+            function(i){
+                d.setLineDash([]);
+                d.beginPath();
+                d.moveTo(left.x,left.y);
+                d.lineTo(left.x-20,left.y);
+                d.lineTo(i.right.x+20,i.right.y);
+                d.lineTo(i.right.x,i.right.y);
+                d.stroke();
+            }
+        )
+    }
+    if (this.right_ConnectTo) {
+        this.right_ConnectTo.forEach(
+            function (i) {
+                d.setLineDash([]);
+                d.beginPath();
+                d.moveTo(right.x, right.y);
+                d.lineTo(right.x + 20, right.y);
+                d.lineTo(i.left.x - 20, i.left.y);
+                d.lineTo(i.left.x, i.left.y);
+                d.stroke();
+            }
+        )
+    }
+}
+
+function content(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.selected = false;
+    this.dashline = false;
+    this.state_onControl = false;
+    this.left_ConnectTo = [];
+    this.right_ConnectTo = [];
+
+    this.left = { x: this.x, y: this.y + (this.height / 2) }
+    this.right = { x: this.x + this.width, y: this.y + (this.height / 2) }
+}
+
+
+
+//Content Draw funciton
+content.prototype.draw = function () {
+
+    d.lineWidth = 2;
+    if (this.selected) {
+        d.fillStyle = "Grey";
+        d.fillRect(this.x, this.y, this.width, this.height);
+    }
+    if (this.dashline) {
+        d.setLineDash([6, 6]);
+    }else{
+        d.setLineDash([]);
+    }
+    d.beginPath();
+    d.rect(this.x, this.y, this.width, this.height);
+    d.stroke();
+    this.left = { x: this.x, y: this.y + (this.height / 2) }
+    this.right = { x: this.x + this.width, y: this.y + (this.height / 2) }
+    if (this.state_onControl) this.Draw_onControl();
+
+}
+
+//==============================================================
+
+function Draw_CreateElement(e){
+    this.e = e;
+    Board.onCreate=true;
+    diagram.push(new content(this.e.pageX,this.e.pageY,0,0));
+    Canvas.onmousemove=function(j){
+        if(Board.onCreate){
+        var index=diagram.length-1;
+        diagram[index].width=j.pageX-diagram[index].x;
+        diagram[index].height=j.pageY-diagram[index].y;
+        Board.redraw();
+        }
+    }
+    }
+
+function Draw_MoveElements(e){
+    Canvas.onmouseup = function () {
+        if (Board.onDrag) { // if on onDrag mode, end onDrag
+            Board.onDrag = false;
+        }
+    }
+    var last_e = e;
+    Board.onDrag = true;
+    Canvas.onmousemove = function (mousemove_e) {
+        if (Board.onDrag) {
+            this.s = last_e;
+            this.n = mousemove_e;
+            var offset = { x: (this.n.pageX - this.s.pageX), y: (this.n.pageY - this.s.pageY) }
+            Board.selectedElements.forEach(function (i) {
+                i.x = i.x + offset.x;
+                i.y = i.y + offset.y;
+                i.left;
+                i.right;
+                
+            });
+            Board.redraw();
+            last_e = mousemove_e;
+        }
+    }
+}
+Canvas.oncontextmenu= function(e){
+    var onElement = Board.isOnElement(e)
+    if(Board.onCreate){
+        Board.onCreate=false;
+        }
+        if (onElement != undefined) {
+            if(onElement.index==0){
+                diagram.shift()
+            }else{
+                diagram.splice(onElement.index, onElement.index);
+            }
+        Board.redraw();
+}
+return false; // Cancel defalut right click menu
+}
+
+function Draw_SelectElement(onElement){
+    onElement.element.selected = true;
+    if (Board.selectedElements.indexOf(onElement.element) == -1) {
+        Board.selectedElements.push(onElement.element);
+        Board.redraw();
+        
+    }
+    Board.redraw();
+    
+}
+
+function Draw_SelectionBox(e) {
+    mousedown = { x: e.pageX, y: e.pageY };
+    selectBox = new content(mousedown.x, mousedown.y, 0, 0, 0);//instance select box content
+    selectBox.dashline = true;
+    selectBox.draw();
+    Canvas.onmousemove = function (e) {
+        Board.onSelection = true;
+        selectBox.width = e.pageX - mousedown.x;
+        selectBox.height = e.pageY - mousedown.y;
+        //## forEach find inSelctBox element
+        diagram.forEach(function (i) {
+            if ((mousedown.x < i.x) && (e.pageX > i.x + i.width) && (mousedown.y < i.y) && (e.pageY > i.y + i.height)) {
+                i.selected = true;
+            } else {
+                i.selected = false;
+            }
+        })
+        Board.redraw();
+        selectBox.draw();
+    }
+    //referesh mouseup EventListener
+    Canvas.addEventListener('mouseup', function (e) {
+        Board.refreshSelected();
+        selectBox = null;
+        Canvas.onmousemove = null;
+        Board.redraw();
+    })
+}
+
+
+
+function Default_onclick (e){
+    var onElement = Board.isOnElement(e)
+    if (!onElement && !Board.onDrag && !Board.onSelection && !Board.onCreate) {    //click on nothing
+        Board.resetSelect();
+        Board.redraw();
+        return;
+    }
+    if (Board.onSelection) { // clean selection box state
+        Board.onSelection = false;
+        Board.redraw();
+        return;
+    }
+}
+
+function Default_onMouseDown(e){
+    
+    
+    var onElement = Board.isOnElement(e);
+    if (!onElement) {
+        Draw_SelectionBox(e);
+        Canvas.onmouseup = Board.resetSelect();
+    }
+    if (onElement) {
+        if (!onElement.element.selected) {
+            Board.resetSelect();
+            Draw_SelectElement(onElement)
+            Draw_MoveElements(e, onElement);
+
+        } else {
+            Draw_MoveElements(e);
+        }
+    }
+}
+
+function Connection_onMouseDown(e){
+    var onControlPoint = Board.isOnControl(e);
+    if(onControlPoint){
+        Canvas.onmousemove = function(e){
+            Board.redraw();
+            if(onControlPoint=='left'){
+                Board.onControl.Draw_Connection({x:e.pageX,y:e.pageY},null);
+            }else{
+                Board.onControl.Draw_Connection(null,{ x: e.pageX, y: e.pageY });
+            }
+        }     
+        Canvas.onmouseup= function(e){
+            Canvas.onmousemove=null;
+            var onElement = Board.isOnElement(e);
+            if(onElement && onControlPoint =='left') {
+                Board.onControl.left_ConnectTo.push(onElement.element) ;
+                Board.onControl=null;
+                Board.redraw();
+
+                return;
+            }
+            if (onElement && onControlPoint == 'right') {
+                console.log('right');
+                
+                Board.onControl.right_ConnectTo.push(onElement.element);
+                Board.onControl = null;
+                Board.redraw();
+                return;
+            }
+            if(!onControlPoint){
+                return;
+
+            }
+        }   
+    }
+}
+
+
+//======================================================================================
+
+var diagram = [];
+diagram.push(new content(10, 30, 30, 100, 1));
+diagram.push(new content(50, 50, 100, 100, 2));
+diagram.push(new content(200, 300, 50, 50, 3))
+diagram[2].left_ConnectTo.push(diagram[1]);
+
+var selectBox = null;
+var Board = new Canv(d, diagram);
+Board.redraw();
+
+Canvas.onmousedown = function(e){ 
+    if (Board.onControl) {
+        Connection_onMouseDown(e);
+    }else{
+
+        Default_onMouseDown(e)
+    }
+    
+} ;
+Canvas.onclick = function(e){Default_onclick(e);}
+
+
+
+Canvas.ondblclick = function(onclick_e){
+    var onElement = Board.isOnElement(onclick_e);   
+    if(onElement){
+        onElement.element.state_onControl=true;
+        Board.onControl = onElement.element;
+        Board.redraw();
+          //double click in element event
+    }else{
+    Draw_CreateElement(onclick_e);
+    }   
+}
+</script>
+</html>
