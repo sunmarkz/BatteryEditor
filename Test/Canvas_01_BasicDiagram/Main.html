@@ -65,8 +65,8 @@
     function Element_Select(element) {
         element.selected = true;
         if (Board.selectedElements.indexOf(element) == -1) {
+            //in case repeated 
             Board.selectedElements.push(element);
-
         } else {
             return;
         }
@@ -85,8 +85,7 @@
     }
 
     function Draw_SelectionBox(e) {
-        console.log('drawing selection ');
-        
+
         mousedown = { x: e.pageX, y: e.pageY };
         selectBox = new content(mousedown.x, mousedown.y, 0, 0);//instance select box content
         selectBox.dashline = true;
@@ -106,6 +105,7 @@
             Board.redraw();
             selectBox.draw();
         }
+
         //referesh mouseup EventListener
         Canvas.addEventListener('mouseup', function (e) {
             selectBox = null;
@@ -114,50 +114,41 @@
         })
     }
 
+    function Draw_Select(element) {
+        Element_Select(element);
+        Board.redraw();
+    }
 
 
 
 
-
-    function Connection_onMouseDown(e) {
-        var start = Board.isOnControl(e);
-        console.log(start);
-        if (start) {
-            console.log(start.position.left)
-
-            if (start.position.left) {
-                Canvas.onmousemove = function (e) {
-                    Board.redraw()
-                    start.element.Draw_Connection(e,null);
-                }
+    function Connection_onMouseDown(e, onControl) {
+        if (onControl.position.left) {
+            Canvas.onmousemove = function (e) {
+                Board.redraw()
+                onControl.element.Draw_Connection(e, null);
             }
-            if (start.position.right) {
-                Canvas.onmousemove = function (e) {
+        }
+        if (onControl.position.right) {
+            Canvas.onmousemove = function (e) {
 
-                    Board.redraw()
-                    start.element.Draw_Connection(null, e);
-                }
+                Board.redraw()
+                onControl.element.Draw_Connection(null, e);
             }
-
-
-
-            Canvas.onmouseup = function (e) {
-                Canvas.onmousemove = null;
-                var onElement = Board.isOnElement(e);
-                if (onElement && start.position.left) {
-                    start.element.left_ConnectTo.push(onElement.element);
-                    Board.redraw();
-                    return;
-                }
-                if (onElement && start.position.right) {
-                    start.element.right_ConnectTo.push(onElement.element);
-                    Board.redraw();
-                    return;
-                }
+        }
+        Canvas.onmouseup = function (e) {
+            Canvas.onmousemove = null;
+            var onElement = Board.isOnElement(e);
+            if (onElement && onControl.position.left) {
+                onControl.element.left_ConnectTo.push(onElement.element);
+                Board.redraw();
+                return;
             }
-        }else{
-            Board.resetSelect();
-            Board.redraw()
+            if (onElement && onControl.position.right) {
+                onControl.element.right_ConnectTo.push(onElement.element);
+                Board.redraw();
+                return;
+            }
         }
     }
 
@@ -175,49 +166,130 @@
     Board.redraw();
 
     Canvas.onmousedown = function (e) {
-        
-        
-        
+
+        /*
+        mousedown event have these status:
+
+        on selected status : 
+
+            click on elements control bar:
+              call element draw_connection function
+
+            click on background : 
+                cancel selection 
+                call selection box 
+
+            click on element:
+                dragging function 
+                cancel existed selection and select element
+
+
+        on no selection status:
+            click on element:
+                select element
+                dragging function
+
+            click on background:
+                draw_selection function 
+        */
+
         var onElement = Board.isOnElement(e);
-        if (onElement) { // if click on the block
-            console.log('Click onElement');
-            if (!onElement.element.selected) { // if block didnt selected
-                Board.resetSelect();
-                Element_Select(onElement.element);
+
+        // on no selection status:
+        if (!Board.selectedElements.length) {
+            console.log(Board.selectedElements.length);
+
+            if (onElement) {
+                console.log('select');
+                // click on element
+                Draw_Select(onElement.element);// select element
+                Draw_MoveElements(e);
+                return;
+            } else {
+                Draw_SelectionBox(e); // call selection Box
+                console.log('nothing happen');
+
+            }
+            //click on background nothing happen
+        }
+
+        // on selected status:
+        if (Board.selectedElements.length) {
+            console.log(Board.selectedElements.length);
+
+            //click on elements control bar:
+            var onControl = Board.isOnControl(e);
+            if (onControl) {
+                Connection_onMouseDown(e, onControl)
+                //call element draw_connection function
+                return;// end continue other condition 
+            }
+
+            //click on background:
+            if (!onElement) {
+                //click on background:
+                Board.resetSelect(); // reset selection 
                 Board.redraw();
-                Draw_MoveElements(e);
-            } else if (onElement.element.selected) { // if block already selected
-                Draw_MoveElements(e);
+                return; // end continue other condition 
+            } else {
+                // click on element:
+                if(onElement.element.selected){
+                    Draw_MoveElements(e);
+                    }else{
+                        Board.resetSelect();
+                        Draw_Select(onElement.element);
+                        Draw_MoveElements(e);
+                    }
             }
         }
-        else {
-                        console.log('Didnt Click onElement');
 
-            if (Board.selectedElements==[]) {
-                console.log('on Selection',Board.selectedElements);
-                
-                Connection_onMouseDown(e);
-                return;
-            }else{
-                console.log('draw selection');
-                
-            Draw_SelectionBox(e);
-            Canvas.onmouseup = Board.resetSelect();
-            Board.redraw();
-        }}
-                console.log(Board.selectedElements);
 
     }
-    
-    
+
+
+    /*
+    else {
+        //empty selection condition:
+
+    }
+
+    // if click on the block
+    if (onElement) {
+        console.log('Click onElement');
+        // if block didnt selected
+        if (!onElement.element.selected) {
+            Board.resetSelect();
+            Element_Select(onElement.element);  // call select functin
+            Board.redraw();
+            Draw_MoveElements(e);   //call move element function
+        } else if (onElement.element.selected) { // if block already selected
+            Draw_MoveElements(e);
+        }
+    }
+    else {
+        //nothing selected:
+        if (Board.selectedElements != []) {
+            console.log('on Selection', Board.selectedElements);
+            Connection_onMouseDown(e);
+            return;
+        } else {
+            console.log('draw selection');
+
+            Canvas.onmouseup = Board.resetSelect();
+            Board.redraw();
+        }
+    }
+    console.log(Board.selectedElements);
+
+}
+*/
+
     Canvas.ondblclick = function (onclick_e) {
         var onElement = Board.isOnElement(onclick_e);
-        if (onElement) {
-            onElement.element.state_onControl = true;
+        if (!onElement) {
+            Draw_CreateElement(onclick_e);
             Board.redraw();
             //double click in element event
-        } else {
-            Draw_CreateElement(onclick_e);
         }
     }
 

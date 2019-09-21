@@ -58,7 +58,7 @@ Canv.prototype.selectList = function () {
 }
 Canv.prototype.isOnElement = function (e) {
     Board.clear();
-    var result;
+    var result = false;
     this.list.forEach(function (i, j) {
         i.draw();
         if (d.isPointInPath(e.pageX, e.pageY)) {

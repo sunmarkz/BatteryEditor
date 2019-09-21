@@ -123,10 +123,10 @@ content.prototype.draw = function () {
 
 
 content.prototype.isOnControl = function (e) {
-    if ((e.pageX - this.left.x) * (e.pageX - this.left.x) + (e.pageY - this.left.y) * (e.pageY - this.left.y) <= 16 * 16) {
+    if ((e.pageX - this.left.x) * (e.pageX - this.left.x) + (e.pageY - this.left.y) * (e.pageY - this.left.y) <= 20 * 20) {
         return ({left:true,right:false});//return left
     }
-    if ((e.pageX - this.right.x) * (e.pageX - this.right.x) + (e.pageY - this.right.y) * (e.pageY - this.right.y) <= 16 * 16) {
+    if ((e.pageX - this.right.x) * (e.pageX - this.right.x) + (e.pageY - this.right.y) * (e.pageY - this.right.y) <= 20 * 20) {
         return ({left:false,right:true});//return right
     }
     return ({ left: false, right: false });;
