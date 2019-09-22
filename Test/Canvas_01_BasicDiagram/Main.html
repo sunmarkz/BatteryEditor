@@ -5,13 +5,18 @@
 
     </canvas>
 </body>
+<script src="./Graphic_Cal.js"></script>
 <script src="./Board_event.js"></script>
 <script src="./Diagram_event.js"></script>
+<script src='./Controller.js'></script>
+<script src='./ConnectionNode.js'></script>
+
 <script>
     // Initialization
     var Canvas = document.getElementById('MyCanvas');
     var body = document.querySelector('body');
     var draw = Canvas.getContext('2d');
+    var magnetDistance = 100;
     Canvas.height = window.innerHeight;
     Canvas.width = window.innerWidth;
     d = Canvas.getContext('2d');
@@ -122,33 +127,28 @@
 
 
 
-    function Connection_onMouseDown(e, onControl) {
-        if (onControl.position.left) {
-            Canvas.onmousemove = function (e) {
-                Board.redraw()
-                onControl.element.Draw_Connection(e, null);
-            }
-        }
-        if (onControl.position.right) {
-            Canvas.onmousemove = function (e) {
+    function Connection_onMouseDown(e, node) {
+        var TempConnectElement;
 
-                Board.redraw()
-                onControl.element.Draw_Connection(null, e);
-            }
+        Canvas.onmousemove = function (move_e) {
+            var onMagnet = Board.magnetPoint(move_e);
+            Board.redraw()
+            node.drawPointLine(onMagnet.position);
+            TempConnectElement = onMagnet.element;
         }
+
+
+
         Canvas.onmouseup = function (e) {
             Canvas.onmousemove = null;
-            var onElement = Board.isOnElement(e);
-            if (onElement && onControl.position.left) {
-                onControl.element.left_ConnectTo.push(onElement.element);
+            console.log(TempConnectElement);
+
+            if (TempConnectElement.element) {
+                node.push(TempConnectElement.element)
                 Board.redraw();
                 return;
             }
-            if (onElement && onControl.position.right) {
-                onControl.element.right_ConnectTo.push(onElement.element);
-                Board.redraw();
-                return;
-            }
+
         }
     }
 
@@ -159,7 +159,9 @@
     diagram.push(new content(10, 30, 30, 100, 1));
     diagram.push(new content(50, 50, 100, 100, 2));
     diagram.push(new content(200, 300, 50, 50, 3))
-    diagram[2].left_ConnectTo.push(diagram[1]);
+    
+    diagram[0].node.left.push(diagram[1].node.right)
+    console.log(diagram[0].node.left);
 
     var selectBox = null;
     var Board = new Canv(d, diagram);
@@ -167,60 +169,32 @@
 
     Canvas.onmousedown = function (e) {
 
-        /*
-        mousedown event have these status:
-
-        on selected status : 
-
-            click on elements control bar:
-              call element draw_connection function
-
-            click on background : 
-                cancel selection 
-                call selection box 
-
-            click on element:
-                dragging function 
-                cancel existed selection and select element
-
-
-        on no selection status:
-            click on element:
-                select element
-                dragging function
-
-            click on background:
-                draw_selection function 
-        */
 
         var onElement = Board.isOnElement(e);
 
         // on no selection status:
         if (!Board.selectedElements.length) {
-            console.log(Board.selectedElements.length);
 
             if (onElement) {
-                console.log('select');
                 // click on element
                 Draw_Select(onElement.element);// select element
                 Draw_MoveElements(e);
                 return;
             } else {
                 Draw_SelectionBox(e); // call selection Box
-                console.log('nothing happen');
 
             }
             //click on background nothing happen
         }
 
+
         // on selected status:
         if (Board.selectedElements.length) {
-            console.log(Board.selectedElements.length);
 
             //click on elements control bar:
-            var onControl = Board.isOnControl(e);
-            if (onControl) {
-                Connection_onMouseDown(e, onControl)
+            var onNode = Board.isOnControl(e);
+            if (onNode) {
+                Connection_onMouseDown(e, onNode)
                 //call element draw_connection function
                 return;// end continue other condition 
             }
@@ -233,56 +207,19 @@
                 return; // end continue other condition 
             } else {
                 // click on element:
-                if(onElement.element.selected){
+                if (onElement.element.selected) {
                     Draw_MoveElements(e);
-                    }else{
-                        Board.resetSelect();
-                        Draw_Select(onElement.element);
-                        Draw_MoveElements(e);
-                    }
+                } else {
+                    Board.resetSelect();
+                    Draw_Select(onElement.element);
+                    Draw_MoveElements(e);
+                }
             }
         }
 
 
     }
 
-
-    /*
-    else {
-        //empty selection condition:
-
-    }
-
-    // if click on the block
-    if (onElement) {
-        console.log('Click onElement');
-        // if block didnt selected
-        if (!onElement.element.selected) {
-            Board.resetSelect();
-            Element_Select(onElement.element);  // call select functin
-            Board.redraw();
-            Draw_MoveElements(e);   //call move element function
-        } else if (onElement.element.selected) { // if block already selected
-            Draw_MoveElements(e);
-        }
-    }
-    else {
-        //nothing selected:
-        if (Board.selectedElements != []) {
-            console.log('on Selection', Board.selectedElements);
-            Connection_onMouseDown(e);
-            return;
-        } else {
-            console.log('draw selection');
-
-            Canvas.onmouseup = Board.resetSelect();
-            Board.redraw();
-        }
-    }
-    console.log(Board.selectedElements);
-
-}
-*/
 
     Canvas.ondblclick = function (onclick_e) {
         var onElement = Board.isOnElement(onclick_e);

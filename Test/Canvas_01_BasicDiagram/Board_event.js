@@ -6,10 +6,30 @@ function Canv(canvas, contentList) {
     this.onSelection = false;
     this.onControl = null;
     this.selectedElements = [];
+    this.magnetDist = 30;
+    this.ConnectionNodeSize = 8;
 
 
 }
 
+Canv.prototype.magnetPoint = function (e) {
+    var result = { position: { x: e.pageX, y: e.pageY }, element: null }
+    var magnetDist = this.magnetDist
+    this.list.forEach(function (i) {
+        if (!i.selected) {
+            if (Di_lessThan(i.node.left.position, result.position, magnetDist)) {
+                result = {position: i.node.left.position, element:i.node.left};
+                return false;
+            }
+            if (Di_lessThan(i.node.right.position, result.position, magnetDist)) {
+                result = { position: i.node.right.position, element: i.node.right };
+                return false;
+            }
+        }
+    });
+
+    return result;
+}
 
 Canv.prototype.clear = function () {
     d.clearRect(0, 0, Canvas.width, Canvas.height);
@@ -44,7 +64,7 @@ Canv.prototype.resetSelect = function () {
         i.state_onControl = false;
         // reset onControl statement
     })
-    this.selectedElements= [];
+    this.selectedElements = [];
 
 }
 Canv.prototype.selectList = function () {
@@ -71,15 +91,13 @@ Canv.prototype.isOnElement = function (e) {
 }
 Canv.prototype.isOnControl = function (e) {
     var result;
-    var feedback;
     Board.selectedElements.forEach(
         function (i) {
-            result = i.isOnControl(e);
-            if (result.left || result.right) {
-                feedback = {position:result,element:i};
+            if(i.isOnControl(e)){
+                result=i.isOnControl(e);
                 return false;
             }
         }
     )
-    return feedback;
+    return result;
 }
