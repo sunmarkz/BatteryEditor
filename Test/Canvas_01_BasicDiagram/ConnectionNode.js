@@ -1,19 +1,22 @@
 function Node(element, position, type = ('left' | 'right')) {
     this.position = position;
-    this.connecte_Left = new Array();
-    this.connecte_Right = new Array();
+    this.connecte_Left = [];
+    this.connecte_Right = []
     this.Appended = element;
     this.type = type;
 }
 Node.prototype.push = function (node) {
-    var inleft = node in this.connecte_Left;
-    var inright = node in this.connecte_Right;
+    var inleft = !(node in this.connecte_Left) ;
+    var inright = !(node in this.connecte_Right);
     if (node.type == 'left' && inleft) {
         this.connecte_Left.push(node);
+        console.log('leftpush============');
+        
         return;
     }
     if (node.type == 'right' && inright) {
         this.connecte_Right.push(node);
+        console.log('right==============');
         return;
     }
 }
@@ -55,6 +58,7 @@ Node.prototype.isOnNode = function (e) {
 
 
 Node.prototype.drawLine = function () {
+    start = this.position;
     d.lineWidth = 1;
     var startOffset = this.type == 'left' ? -20 : 20
     if (this.connecte_Left) {
@@ -64,8 +68,8 @@ Node.prototype.drawLine = function () {
             d.beginPath();
             d.moveTo(start.x, start.y);
             d.lineTo(start.x + startOffset, start.y);
-            d.lineTo(i.left.x + targetOffset, i.left.y);
-            d.lineTo(i.left.x, i.left.y);
+            d.lineTo(i.position.x + targetOffset, i.position.y);
+            d.lineTo(i.position.x, i.position.y);
             d.stroke();
         });
     }
@@ -75,8 +79,8 @@ Node.prototype.drawLine = function () {
             d.beginPath();
             d.moveTo(start.x, start.y);
             d.lineTo(start.x + startOffset, start.y);
-            d.lineTo(i.left.x + targetOffset, i.left.y);
-            d.lineTo(i.left.x, i.left.y);
+            d.lineTo(i.position.x + targetOffset, i.position.y);
+            d.lineTo(i.position.x, i.position.y);
             d.stroke();
         });
     }

@@ -132,21 +132,23 @@
 
         Canvas.onmousemove = function (move_e) {
             var onMagnet = Board.magnetPoint(move_e);
+            
+            TempConnectElement = onMagnet.element;
             Board.redraw()
             node.drawPointLine(onMagnet.position);
-            TempConnectElement = onMagnet.element;
         }
 
 
 
         Canvas.onmouseup = function (e) {
             Canvas.onmousemove = null;
-            console.log(TempConnectElement);
-
-            if (TempConnectElement.element) {
-                node.push(TempConnectElement.element)
+            if (TempConnectElement) {
+                node.push(TempConnectElement);
                 Board.redraw();
                 return;
+            }
+            else{
+                Board.redraw();
             }
 
         }
@@ -161,7 +163,6 @@
     diagram.push(new content(200, 300, 50, 50, 3))
     
     diagram[0].node.left.push(diagram[1].node.right)
-    console.log(diagram[0].node.left);
 
     var selectBox = null;
     var Board = new Canv(d, diagram);

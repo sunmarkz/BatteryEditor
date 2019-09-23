@@ -19,10 +19,14 @@ Canv.prototype.magnetPoint = function (e) {
         if (!i.selected) {
             if (Di_lessThan(i.node.left.position, result.position, magnetDist)) {
                 result = {position: i.node.left.position, element:i.node.left};
+                // console.log(result);
+                
                 return false;
             }
             if (Di_lessThan(i.node.right.position, result.position, magnetDist)) {
                 result = { position: i.node.right.position, element: i.node.right };
+                // console.log(result);
+                
                 return false;
             }
         }
