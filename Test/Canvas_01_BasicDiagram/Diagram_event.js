@@ -4,7 +4,6 @@ function content(x, y, width, height) {
     this.width = width;
     this.height = height;
     this.selected = false;
-    this.dashline = false;
     this.left_ConnectTo = [];
     this.right_ConnectTo = [];
 
@@ -53,31 +52,27 @@ content.prototype.draw = function () {
     this.node.left.updatePosition();
     this.node.right.updatePosition();
 
-    d.lineWidth = 2;
-    if (this.dashline) {
-        d.setLineDash([6, 6]);
-    } else {
-        d.setLineDash([]);
-    }
-    if (this.selected) {
-        d.fillStyle = "Grey";
-        d.fillRect(this.x, this.y, this.width, this.height);
 
-        this.node.left.draw();
-        this.node.right.draw();
-    }
 
     d.beginPath();
-    d.lineWidth = 2;
     d.rect(this.x, this.y, this.width, this.height);
-    if (!this.selected) {
-        d.fillStyle = 'white';
-        d.fill();
-    }
     d.closePath();
-    d.stroke();
+    if (this.selected) {
+        CanvStyle('elementSelected');
+        this.node.left.draw();
+        this.node.right.draw();
+    } else {
+        CanvStyle('element');
+    }
+
 }
 
+content.prototype.OnElementDetect = function () {
+    d.beginPath();
+    d.rect(this.x, this.y, this.width, this.height);
+    d.closePath();
+
+}
 
 content.prototype.isOnControl = function (e) {
     if (this.node.left.isOnNode(e)) { return this.node.left; }

@@ -65,7 +65,6 @@ Canv.prototype.redraw = function () {
 Canv.prototype.resetSelect = function () {
     this.selectedElements.forEach(function (i) {
         i.selected = false;
-        i.state_onControl = false;
         // reset onControl statement
     })
     this.selectedElements = [];
@@ -84,7 +83,7 @@ Canv.prototype.isOnElement = function (e) {
     Board.clear();
     var result = false;
     this.list.forEach(function (i, j) {
-        i.draw();
+        i.OnElementDetect();
         if (d.isPointInPath(e.pageX, e.pageY)) {
             result = { element: i, index: j }
             return false;// escape forEach
@@ -97,8 +96,8 @@ Canv.prototype.isOnControl = function (e) {
     var result;
     Board.selectedElements.forEach(
         function (i) {
-            if(i.isOnControl(e)){
-                result=i.isOnControl(e);
+            result=i.isOnControl(e);
+            if(result){
                 return false;
             }
         }

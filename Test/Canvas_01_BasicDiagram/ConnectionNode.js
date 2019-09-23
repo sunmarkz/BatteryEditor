@@ -10,13 +10,10 @@ Node.prototype.push = function (node) {
     var inright = !(node in this.connecte_Right);
     if (node.type == 'left' && inleft) {
         this.connecte_Left.push(node);
-        console.log('leftpush============');
-        
         return;
     }
     if (node.type == 'right' && inright) {
         this.connecte_Right.push(node);
-        console.log('right==============');
         return;
     }
 }
@@ -38,18 +35,16 @@ Node.prototype.updatePosition = function () {
     }
 }
 Node.prototype.draw = function () {
-    d.fillStyle = "white";
-    d.lineWidth = 1;
+   
     d.beginPath();
     d.arc(this.position.x, this.position.y, 8, 0, Math.PI * 2);
-    d.stroke();
     d.closePath();
-    d.fill();
+    CanvStyle('Node');
 }
 
 
 Node.prototype.isOnNode = function (e) {
-    if (Di_lessThan(this.position, { x: e.pageX, y: e.pageY }, Board.ConnectionNodeSize * 3)) {
+    if (Di_lessThan(this.position, { x: e.pageX, y: e.pageY }, Board.ConnectionNodeSize * 2)) {
         return true;
     } else {
         return false;

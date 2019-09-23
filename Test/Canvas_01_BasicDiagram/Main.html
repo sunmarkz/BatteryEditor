@@ -6,6 +6,7 @@
     </canvas>
 </body>
 <script src="./Graphic_Cal.js"></script>
+<script src="./View_CanvStyle.js"></script>
 <script src="./Board_event.js"></script>
 <script src="./Diagram_event.js"></script>
 <script src='./Controller.js'></script>
@@ -40,36 +41,30 @@
         }
     }
 
-    function Draw_MoveElements(e) {
+    function  Draw_MoveElements(e) {
+        console.log('moving');
+        
         Canvas.onmouseup = function () {
-            if (Board.onDrag) { // if on onDrag mode, end onDrag
-                Board.onDrag = false;
-            }
+            Canvas.onmousemove = null;
         }
         var last_e = e;
-        Board.onDrag = true;
         Canvas.onmousemove = function (mousemove_e) {
-            if (Board.onDrag) {
-                this.s = last_e;
-                this.n = mousemove_e;
-                var offset = { x: (this.n.pageX - this.s.pageX), y: (this.n.pageY - this.s.pageY) }
-                Board.selectedElements.forEach(function (i) {
-                    i.x = i.x + offset.x;
-                    i.y = i.y + offset.y;
-                    i.left;
-                    i.right;
+            var offset = { x: (mousemove_e.pageX - last_e.pageX), y: (mousemove_e.pageY - last_e.pageY) }
 
-                });
-                Board.redraw();
-                last_e = mousemove_e;
-            }
+            Board.selectedElements.forEach(function (i) {
+                i.x = i.x + offset.x;
+                i.y = i.y + offset.y;
+            });
+            Board.redraw();
+            last_e = mousemove_e;
         }
     }
 
 
     function Element_Select(element) {
-        element.selected = true;
-        if (Board.selectedElements.indexOf(element) == -1) {
+        inSelectionList = Board.selectedElements.indexOf(element);
+        if (inSelectionList==-1) {
+            element.selected = true;
             //in case repeated 
             Board.selectedElements.push(element);
         } else {
@@ -80,7 +75,7 @@
         element.selected = false;
         var index = Board.selectedElements.indexOf(element);
         if (index != -1) {
-            if (onElement.index == 0) {
+            if (index == 0) {
                 Board.selectedElements.shift()
             } else {
                 Board.selectedElements.splice(index, index);
@@ -92,13 +87,9 @@
     function Draw_SelectionBox(e) {
 
         mousedown = { x: e.pageX, y: e.pageY };
-        selectBox = new content(mousedown.x, mousedown.y, 0, 0);//instance select box content
-        selectBox.dashline = true;
-        selectBox.draw();
+
         Canvas.onmousemove = function (e) {
             Board.onSelection = true;
-            selectBox.width = e.pageX - mousedown.x;
-            selectBox.height = e.pageY - mousedown.y;
             //## forEach find inSelctBox element
             diagram.forEach(function (i) {
                 if ((mousedown.x < i.x) && (e.pageX > i.x + i.width) && (mousedown.y < i.y) && (e.pageY > i.y + i.height)) {
@@ -108,12 +99,14 @@
                 }
             })
             Board.redraw();
-            selectBox.draw();
+            d.beginPath();
+            d.rect(mousedown.x, mousedown.y, e.pageX - mousedown.x, e.pageY - mousedown.y);
+            d.closePath();
+            CanvStyle('selectionBox');
         }
 
         //referesh mouseup EventListener
         Canvas.addEventListener('mouseup', function (e) {
-            selectBox = null;
             Canvas.onmousemove = null;
             Board.redraw();
         })
@@ -132,7 +125,7 @@
 
         Canvas.onmousemove = function (move_e) {
             var onMagnet = Board.magnetPoint(move_e);
-            
+
             TempConnectElement = onMagnet.element;
             Board.redraw()
             node.drawPointLine(onMagnet.position);
@@ -147,7 +140,7 @@
                 Board.redraw();
                 return;
             }
-            else{
+            else {
                 Board.redraw();
             }
 
@@ -161,7 +154,7 @@
     diagram.push(new content(10, 30, 30, 100, 1));
     diagram.push(new content(50, 50, 100, 100, 2));
     diagram.push(new content(200, 300, 50, 50, 3))
-    
+
     diagram[0].node.left.push(diagram[1].node.right)
 
     var selectBox = null;
@@ -169,12 +162,10 @@
     Board.redraw();
 
     Canvas.onmousedown = function (e) {
-
-
         var onElement = Board.isOnElement(e);
 
         // on no selection status:
-        if (!Board.selectedElements.length) {
+        if (!Board.selectedElements) {
 
             if (onElement) {
                 // click on element
@@ -190,11 +181,13 @@
 
 
         // on selected status:
-        if (Board.selectedElements.length) {
+        if (Board.selectedElements) {
 
             //click on elements control bar:
             var onNode = Board.isOnControl(e);
             if (onNode) {
+                console.log('onNode');
+                
                 Connection_onMouseDown(e, onNode)
                 //call element draw_connection function
                 return;// end continue other condition 
@@ -205,15 +198,26 @@
                 //click on background:
                 Board.resetSelect(); // reset selection 
                 Board.redraw();
+                Draw_SelectionBox(e);
                 return; // end continue other condition 
-            } else {
+            } 
+
+            console.log(onElement.element.selected);
+            if(onElement) {
+                
                 // click on element:
                 if (onElement.element.selected) {
+                    
                     Draw_MoveElements(e);
+                    return;
                 } else {
+                    console.log('didnt select');
+                    
                     Board.resetSelect();
                     Draw_Select(onElement.element);
+                    Board.redraw();
                     Draw_MoveElements(e);
+                    return;
                 }
             }
         }
