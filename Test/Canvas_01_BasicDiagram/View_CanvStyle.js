@@ -1,4 +1,4 @@
-function CanvStyle(style = ('selectionBox' |'element'|'elementSelected'|'Node') ){
+function CanvStyle(style = ('selectionBox' |'element'|'elementSelected'|'Node'|'Text') ){
     var canv = d;
     switch (style) {
         case 'selectionBox':
@@ -30,6 +30,9 @@ function CanvStyle(style = ('selectionBox' |'element'|'elementSelected'|'Node') 
             canv.fill();
             canv.stroke();
             break;
+        case 'Text':
+            canv.font = '15px Calibri';
+            canv.fillStyle='black'
     }
 
 }
