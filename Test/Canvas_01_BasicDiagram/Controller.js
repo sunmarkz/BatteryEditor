@@ -1,7 +1,7 @@
 function Draw_CreateElement(e) {
     this.e = e;
     Board.onCreate = true;
-    diagram.push(new content(this.e.pageX, this.e.pageY, 0, 0));
+    diagram.push(new element(this.e.pageX, this.e.pageY, 0, 0));
     Canvas.onmousemove = function (j) {
         if (Board.onCreate) {
             var index = diagram.length - 1;
@@ -13,7 +13,6 @@ function Draw_CreateElement(e) {
 }
 
 function Draw_MoveElements(e) {
-    console.log('moving');
 
     Canvas.onmouseup = function () {
         Canvas.onmousemove = null;
@@ -73,7 +72,7 @@ function Draw_SelectionBox(e) {
         d.beginPath();
         d.rect(mousedown.x, mousedown.y, e.pageX - mousedown.x, e.pageY - mousedown.y);
         d.closePath();
-        CanvStyle('selectionBox');
+        CanvStyle.SelectionBox();
     }
 
     //referesh mouseup EventListener

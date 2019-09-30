@@ -25,3 +25,23 @@ function Di_Closest(P1, P2, e) {
     var x = Math.pow(P1.x - e.pageX,2) + Math.pow(P1.y - e.pageY,2) <= Math.pow(P2.x - e.pageX,2) + Math.pow(P2.y - e.pageY,2) ? P1 : P2;
     return x;
 }
+
+function point(x,y){
+    if(x instanceof Number  && y instanceof Number){
+        return({x:x,y:y});
+    }else{
+        return ({x: pageX,y:pageY});
+    }
+}
+function midPoint (a,b){{
+    if(a instanceof Number && !(b instanceof Number)){
+        return (point(b.x+(a/2), b.y));
+    }
+    if(!(a instanceof Number) && (b instanceof Number) ){
+        return( point(a.x , a.y+(b/2)));
+    }
+    if ((!(a instanceof Number) && !(b instanceof Number))){
+
+        return(point((a.x+b.x)/2,(a.y+b.y)/2));
+    }
+}}

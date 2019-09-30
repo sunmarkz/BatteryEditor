@@ -1,45 +1,43 @@
-function Node(element, position, type = ('left' | 'right')) {
-    this.position = position;
+function Node(element, type = ('left' | 'right')) {
+    this.position={x:0,y:0};
     this.connecte_Left = [];
     this.connecte_Right = []
-    this.Appended = element;
+    this.parentElement = element;
+    console.log(element.x);
+    
+    
+    this.bundle = new LinkBundle(this);
     this.type = type;
 }
+
 Node.prototype.push = function (node) {
-    var inleft = !(node in this.connecte_Left) ;
-    var inright = !(node in this.connecte_Right);
-    if (node.type == 'left' && inleft) {
-        this.connecte_Left.push(node);
-        return;
-    }
-    if (node.type == 'right' && inright) {
-        this.connecte_Right.push(node);
-        return;
-    }
+
+   this.bundle.push(node);
+
 }
+Object.defineProperties(Node.prototype, {
+
+    position: this.updatePosition(),
+    type:  this.type ,
+    bundle:  this.bundle ,
+    parentElement:  this.parentElement
+})
 
 Node.prototype.updatePosition = function () {
     switch (this.type) {
         case 'left':
             this.position = {
-                x: this.Appended.x,
-                y: this.Appended.y + (this.Appended.height / 2)
+                x: this.parentElement.x,
+                y: this.parentElement.y + (this.parentElement.height / 2)
             }
-            break;
+            return this.position;
         case 'right':
             this.position = {
-                x: this.Appended.x + this.Appended.width,
-                y: this.Appended.y + (this.Appended.height / 2)
+                x: this.parentElement.x + this.parentElement.width,
+                y: this.parentElement.y + (this.parentElement.height / 2)
             }
-            break;
+            return this.position;
     }
-}
-Node.prototype.draw = function () {
-   
-    d.beginPath();
-    d.arc(this.position.x, this.position.y, 8, 0, Math.PI * 2);
-    d.closePath();
-    CanvStyle('Node');
 }
 
 
@@ -52,19 +50,29 @@ Node.prototype.isOnNode = function (e) {
 }
 
 
+
+
+Node.prototype.drawPointLine = function (mouse) {
+    // when on dragging, draw pointed line to mouse Location
+    d.beginPath();
+    d.setLineDash([2, 2]);
+    d.moveTo(this.position.x, this.position.y);
+    d.lineTo(mouse.x, mouse.y);
+    d.stroke();
+}
+
 Node.prototype.drawLine = function () {
     start = this.position;
-    d.lineWidth = 1;
     var startOffset = this.type == 'left' ? -20 : 20
     if (this.connecte_Left) {
         var targetOffset = -20;
-
         this.connecte_Left.forEach(i => {
             d.beginPath();
             d.moveTo(start.x, start.y);
             d.lineTo(start.x + startOffset, start.y);
             d.lineTo(i.position.x + targetOffset, i.position.y);
             d.lineTo(i.position.x, i.position.y);
+            d.lineWidth=0.5;
             d.stroke();
         });
     }
@@ -76,14 +84,10 @@ Node.prototype.drawLine = function () {
             d.lineTo(start.x + startOffset, start.y);
             d.lineTo(i.position.x + targetOffset, i.position.y);
             d.lineTo(i.position.x, i.position.y);
-            d.stroke();
+            d.lineWidth = 0.5;
+             d.stroke();
         });
     }
 }
-Node.prototype.drawPointLine = function (mouse) {
-    d.beginPath();
-    d.setLineDash([2, 2]);
-    d.moveTo(this.position.x, this.position.y);
-    d.lineTo(mouse.x, mouse.y);
-    d.stroke();
-}
+
+

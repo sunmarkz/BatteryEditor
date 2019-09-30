@@ -11,8 +11,8 @@ function Canv(canvas, contentList) {
 
 
 }
-
-Canv.prototype.magnetPoint = function (e) {
+var cv = Canv.prototype;
+cv.magnetPoint = function (e) {
     var result = { position: { x: e.pageX, y: e.pageY }, element: null }
     var magnetDist = this.magnetDist
     this.list.forEach(function (i) {
@@ -35,34 +35,21 @@ Canv.prototype.magnetPoint = function (e) {
     return result;
 }
 
-Canv.prototype.clear = function () {
+cv.clear = function () {
     d.clearRect(0, 0, Canvas.width, Canvas.height);
-
 }
 
-Canv.prototype.redraw = function () {
-
+cv.redraw = function () {
     this.clear();
-
-    var text = this.selectedElements;
-    if (text) {
-        d.fillStyle = "black";
-        d.font = "15px Arial";
-        d.fillText("Selected:" + text.length, 20, 20);
-    }
-    else {
-        d.fillText(0, 20, 20)
-    }
     this.list.forEach(function (i) {
-        i.draw();
-        i.Draw_Connection();
-        if (i.selected) i.Draw_onControl();
+        Draw(i);
     })
 }
 
 
 
-Canv.prototype.resetSelect = function () {
+
+cv.resetSelect = function () {
     this.selectedElements.forEach(function (i) {
         i.selected = false;
         // reset onControl statement
@@ -70,7 +57,7 @@ Canv.prototype.resetSelect = function () {
     this.selectedElements = [];
 
 }
-Canv.prototype.selectList = function () {
+cv.selectList = function () {
     var s = [];
     this.list.forEach(function (i) {
         if (i.selected) {
@@ -79,7 +66,7 @@ Canv.prototype.selectList = function () {
     })
     return (s);
 }
-Canv.prototype.isOnElement = function (e) {
+cv.isOnElement = function (e) {
     Board.clear();
     var result = false;
     this.list.forEach(function (i, j) {
@@ -92,7 +79,7 @@ Canv.prototype.isOnElement = function (e) {
     Board.redraw();
     return result;
 }
-Canv.prototype.isOnControl = function (e) {
+cv.isOnControl = function (e) {
     var result;
     Board.selectedElements.forEach(
         function (i) {
@@ -103,4 +90,9 @@ Canv.prototype.isOnControl = function (e) {
         }
     )
     return result;
+}
+
+cv.ShowControlPoint = function(element){
+    element.node.left.draw();
+    element.node.right.draw();
 }

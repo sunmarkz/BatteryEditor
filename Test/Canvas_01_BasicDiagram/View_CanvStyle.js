@@ -1,38 +1,48 @@
-function CanvStyle(style = ('selectionBox' |'element'|'elementSelected'|'Node'|'Text') ){
-    var canv = d;
-    switch (style) {
-        case 'selectionBox':
-            canv.lineWidth = 1;
-            canv.setLineDash([6,6]);
-            canv.fillStyle = "";
-            canv.stroke();
+var CanvStyle = {
+    SelectionBox: function () {
+        d.lineWidth = 1;
+        d.setLineDash([6, 6]);
+        d.fillStyle = "";
+        d.stroke();
+    },
+    Element: function () {
 
-            break;
-        case 'element':
-            canv.lineWidth = 2;          
-            canv.setLineDash([]);
-            canv.fillStyle = "white";
-            canv.fill();
-            canv.stroke();
-            break;
+        d.setLineDash([]);
+        d.lineWidth = 2;
+        d.fillStyle = "white";
+        d.fill();
+        d.stroke();
+    },
+ElementSelected: function () {
+        d.lineWidth = 2;
+        d.setLineDash([]);
+        d.fillStyle = "Grey";
+        d.fill();
+        d.stroke();
+    },
 
-        case 'elementSelected':
-            canv.lineWidth = 2;          
-            canv.setLineDash([]);
-            canv.fillStyle = "Grey";
-            canv.fill();
-            canv.stroke();
-            break;
-        case 'Node':
-            canv.lineWidth = 1;
-            canv.setLineDash([]);
-            canv.fillStyle = "white";
-            canv.fill();
-            canv.stroke();
-            break;
-        case 'Text':
-            canv.font = '15px Calibri';
-            canv.fillStyle='black'
-    }
+Node: function() {
+        d.lineWidth = 1;
+        d.setLineDash([]);
+        d.fillStyle = "white";
+        d.fill();
+        d.stroke();
+    },
+
+Text: function() {
+        d.font = '22px Calibri';
+        d.fillStyle = 'black'
+    },
+CtrlDot : function(){
+    d.setLineDash([]);
+    d.fillStyle = "blue";
+    d.fill();
+},
+Link : function(){
+    d.lineWidth = 1;
+    d.stroke();
+}
+
 
 }
+
