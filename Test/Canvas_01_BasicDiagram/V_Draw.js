@@ -6,46 +6,40 @@ function Draw(s) {
     s instanceof element && d_ele(input);
     s instanceof Node && d_node(input);
     s instanceof LinkBundle && d_bundleLink(input);
+    s instanceof Link && d_link(input);
 
     function d_ele(el) {
-        // el.node.left.drawLine();
         var element = el;
-        console.log(element.node.left.get.position())
-        // el.node.right.drawLine();
         Draw(el.node.left.bundle);
         Draw(el.node.right.bundle);
-        // el.node.left.updatePosition();
-        // el.node.right.updatePosition();
         CanvDraw.rec(el.x, el.y, el.width, el.height);
         CanvStyle.Element();
-        Draw(el.node.left);
-        Draw(el.node.right);
         if (el.selected) {
+            CanvStyle.ElementSelected();
             Draw(el.node.left);
             Draw(el.node.right);
+            drawCtrl(el.node.left.bundle);
+            drawCtrl(el.node.right.bundle);
         }
-        // Draw(el.text);
-        // el.textDraw();
     }
     function d_link(s) {
-
-        var start = s.get.fromPosition();
-        var target = s.get.toPosition();
-        var startOffset = s.get.type() == 'left' ? -20 : 20
-        var targetOffset = s.get.type() == 'left' ? -20 : 20
+        
+        var start = s.positionFrom;
+        var target = s.positionTo;
+        
+        var startOffset = s.from.offset;
+        var targetOffset = s.to.offset;
         canv.beginPath();
-        canv.moveTo(start);
+        canv.moveTo(start.x,start.y);
         canv.lineTo(start.x + startOffset, start.y);
-        canv.lineTo(target.position.x + targetOffset, target.position.y);
-        canv.lineTo(target.position.x, target.position.y);
+        canv.lineTo(target.x + targetOffset, target.y);
+        canv.lineTo(target.x, target.y);
         CanvStyle.Link();
-
     }
     function d_node(s) {
-        // console.log(s.get.position());
         
         canv.beginPath();
-        // CanvDraw.c(position.x, position.y, 8);
+        CanvDraw.c(s.position.x, s.position.y, 8);
         // canv.arc(s.get.position.x, s.get.position.y, 8, 0, Math.PI * 2);
         canv.closePath();
         CanvStyle.Node();
@@ -68,10 +62,11 @@ function Draw(s) {
         }
     }
     function d_bundleLink(s) {
-        var s = s.get.list();
+        var s = s.linkTo;
+        
         if (s) {
 
-            s.get.list().forEach(i => {
+            s.forEach(i => {
                 Draw(i);
             });
         }
@@ -81,6 +76,7 @@ function Draw(s) {
 
 function drawCtrl(s) {
     s instanceof element && dc_element(s);
+    s instanceof LinkBundle && dc_bundle(s);
     s instanceof Link && dc_link(s);
 
 
@@ -104,9 +100,22 @@ function drawCtrl(s) {
         canv.stroke();
     }
     function dc_link(s) {
-        var MidPoint = s.mid();
+        var MidPoint = s.center;
         CanvDraw.c(MidPoint.x, MidPoint.y, 3);
         CanvStyle.CtrlDot();
+    }
+    function dc_bundle(s){
+        var s = s.linkTo;
+        if (s) {
+            s.forEach(i => {
+                drawCtrl(i);
+            });
+        }
+        if(s.linked){
+            s.linked.forEach(i =>{
+                drawCtrl (i);
+            })
+        }
     }
 }
 

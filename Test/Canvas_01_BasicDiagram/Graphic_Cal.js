@@ -27,11 +27,8 @@ function Di_Closest(P1, P2, e) {
 }
 
 function point(x,y){
-    if(x instanceof Number  && y instanceof Number){
-        return({x:x,y:y});
-    }else{
-        return ({x: pageX,y:pageY});
-    }
+    return({x:x,y:y});
+    
 }
 function midPoint (a,b){{
     if(a instanceof Number && !(b instanceof Number)){

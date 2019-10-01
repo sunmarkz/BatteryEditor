@@ -1,78 +1,74 @@
 <html>
+
 <body>
-    <div>hey</div>
+  <div>hey</div>
 </body>
 <script>
 
-  function book () {
-    this.name;
-    this.edition=12;
-  };
-  Object.defineProperties(book, {
-    // _year: {
-    //   value: 2004,
-    //   writable: true // << writable
-    // },
-    edition: {
-      value: 12,
-      writable: true // << writable
+
+
+  function book(e) {
+    this.x = 1;
+    this.a = 1;
+    this.b = 2;
+    this.get = {
+      a: this.a,
+      b: this.b + 12
+    }
+
+  }
+
+  Object.defineProperties(book.prototype, {
+    _bookname: {
+      writable: true,
+      value: 'value'
+    },
+    bookname: {
+      get: function () { return 'book' + this.x; }
     },
     year: {
       get: function () {
-        // << missing return
-        return this._year;
-      },
-      set: function (value) {
-
-        if (value > 2004) {
-          this._year = value;
-          this.edition = this.edition + value - 2004;
+        return this.x;
+      }
+    },
+        getb: {
+          get: function () { return (this.a) }
         }
+  })
+
+  function shelf(b) {
+    this.b = b;
+  }
+  shelf.prototype.get = {
+    book: function () { return b.bookname }
+  }
+  Object.defineProperties(shelf.prototype, {
+    bookname: {
+      get: function () {
+        return this.b.bookname + "shelf";
       }
     }
-  });
-  book.year = 2016; // << here you used this instead of book
-  console.log(book.edition);
+
+  })
+
+  test = new book('fromheaven');
+  testshelf = new shelf(test);
+  console.log('book.bookname : ', book.bookname);
+  console.log("instace.property : ", test.x)
+  console.log('instance.definedProperty :', test.bookname);
+  console.log(testshelf.bookname)
+  console.log(test.year);
+  document.write(test.get.a + '<p>');
+  document.write(test.get.b + '<p>');
+  test.b = 13;
+  document.write(test.get.b + '<p>');
+  document.write(test.getb)
 
 
-function book (e){
-  this.x = e;
-
-}
-Object.defineProperties(book.prototype,{
-  _bookname:{
-    writable : true,
-    value : 'DefinedProperty'
-  },
-  bookname:{
-    get:function(){return 'thisfromDefine'+this.x;}
-  }
-})
-
-function shelf(b){
-  this.b = b;
-}
-shelf.prototype.get= {
-  book: function(){return b.bookname}
-}
-Object.defineProperties(shelf.prototype,{
-  bookname:{
-    get:function(){
-      return this.b.bookname;
-    }
-  }
-
-})
-
-test = new book('fromheaven');
-testshelf = new shelf (test);
-console.log('book.bookname : ',book.bookname);
-console.log("instace.property : ",test.x)
-console.log('instance.definedProperty :',test.bookname);
-console.log(testshelf.bookname)
 // console.log(book.year);
 
 
 
 </script>
+
 </html>

@@ -1,8 +1,9 @@
 var CanvStyle = {
     SelectionBox: function () {
+
         d.lineWidth = 1;
-        d.setLineDash([6, 6]);
         d.fillStyle = "";
+        d.setLineDash([6, 6]);
         d.stroke();
     },
     Element: function () {
@@ -30,6 +31,7 @@ Node: function() {
     },
 
 Text: function() {
+    d.setLineDash([]);
         d.font = '22px Calibri';
         d.fillStyle = 'black'
     },
@@ -39,6 +41,7 @@ CtrlDot : function(){
     d.fill();
 },
 Link : function(){
+    d.setLineDash([]);
     d.lineWidth = 1;
     d.stroke();
 }

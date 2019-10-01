@@ -4,8 +4,6 @@ function element(x, y, width, height, Text = null) {
     this.width = width;
     this.height = height;
     this.selected = false;
-    this.left_ConnectTo = [];
-    this.right_ConnectTo = [];
     this.Text = Text;
     this.left = {
         x: this.x,
@@ -17,32 +15,35 @@ function element(x, y, width, height, Text = null) {
     }
     this.node = { left: new Node(this, 'left'), right: new Node(this, 'right') }
     
-    this.node.left.updatePosition();
-    this.node.right.updatePosition();
+    // this.node.left.updatePosition();
+    // this.node.right.updatePosition();
 }
 
 //Content Draw funciton
-element.prototype.get = {
-    x:  this.x ,
-    y:  this.y ,
-    width:  this.width ,
-    height:  this.height ,
-    topLeft:  (point(this.x, this.y)) ,
-    botLeft:  (point(this.x, this.y + this.height)) ,
-    botRight:  (point(this.x + this.width, this.y + this.height)) ,
-    topRight:  (point(this.x + this.width, this.y)) ,
-    left:  (point(this.x, (this.y + (this.height / 2)))) ,
-    right:  (point(this.x + this.width, (this.y + this.height / 2))) 
-} 
+Object.defineProperties(element.prototype,{
+    center : {
+        get: function(){
+            return (point(this.x+(this.width/2),this.y+(this.height/2)));
+        },
+        set: function(input){
+            this.x = input.x - (this.width/2);
+            this.y = input.y - (this.height/2);
+        }
+    },
+    left : {
+        get: function(){
+            return (point(this.x , this.y +(this.height/2)));
+        }
+    },
+    right: {
+        get:function() {
+            return (point(this.x+this.width,this.y+ (this.height/2)))
+        }
+    }
 
-element.prototype.set = {
-    x: function (s) { this.x = s },
-    y: function (s) { this.y = s },
-    width: function (s) { this.width = s },
-    height: function (s) { this.height = s },
-    topLeft: function (s = { x: null, y: null }) { this.x = s.x; this.y = s.y },
-    topRight: function (s = { x: null, y: null }) { this.width = s.x - this.x; this.y = s.y }
-}
+});
+
+
 
 
 
