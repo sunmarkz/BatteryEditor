@@ -4,26 +4,31 @@ function Link(from, to) {
     to instanceof LinkBundle && (this.to = to);
     to instanceof Node && (this.to = to.bundle);
     this.type = 'pl'
+    this.graphic_C = new Graphic('c',this.center.x,this.center.y,3);
+}
+Link.prototype.update = function (){
+    this.graphic_C.x = this.center.x;
+    this.graphic_C.y = this.center.y;
 }
 Object.defineProperties(Link.prototype,{
     positionFrom:{
         get: function(){
-            return this.from.position;
+            return (point(this.from.parentNode.graphic.x, this.from.parentNode.graphic.y));
         }
     },
     positionTo :{
         get: function(){
-            return this.to.position;
+            return (point(this.to.parentNode.graphic.x, this.to.parentNode.graphic.y));
         }
     },
     typeFrom : {
         get: function(){
-            return this.from.type;
+            return this.from.parentNode.type;
         }
     },
     typeTo :{
         get: function(){
-            return this.to.type;
+            return this.to.parentNode.type;
         }
     },
     center:{
@@ -41,6 +46,7 @@ Object.defineProperties(Link.prototype,{
             return this.to.offset;
         }
     }
+
 })
 
 
@@ -49,7 +55,6 @@ Link.prototype.reverse = function () {
     var temp = this.from;
     this.from = this.to;
     this.to = temp;
-
 }
 
 
@@ -101,11 +106,13 @@ LinkBundle.prototype.push = function (link) {
     if (!this.isInList(input)) {
         var l = new Link(this, input);
         this.linkTo.push(l);
-        input.linked.push(new Link(this, input));
-        
+        input.linked.push(l);
+        diagram.push(l);
     }
     
 }
+
+
 
 LinkBundle.prototype.isInList = function (link) {
     var link = link

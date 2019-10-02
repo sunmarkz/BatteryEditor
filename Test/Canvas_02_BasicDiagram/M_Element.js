@@ -1,18 +1,36 @@
-function element(x, y, width, height, Text = null) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
+function element(x, y, width=50, height=50, Text = null) {
+    this.graphic = new Graphic('rect',x,y,width,height);
     this.selected = false;
     this.Text = Text;
     this.node = { left: new Node(this, 'left'), right: new Node(this, 'right') }
-    
-    // this.node.left.updatePosition();
-    // this.node.right.updatePosition();
 }
 
 //Content Draw funciton
 Object.defineProperties(element.prototype,{
+    x: {
+        get:function(){return this.graphic.x},
+        set: function(input){ this.graphic.x = input}
+    },
+    y:{
+        get: function(){return this.graphic.y},
+        set : function(input){this.graphic.y = input}
+    },
+    width :{
+        set:function(input){
+            this.graphic.width = input;
+        },
+        get : function(){
+            return this.graphic.width;
+        }
+    },
+    height : {
+        get : function (){
+            return this.graphic.height;
+        },
+        set :function (input) {
+            this.graphic.height = input;
+        }
+    },
     center : {
         get: function(){
             return (point(this.x+(this.width/2),this.y+(this.height/2)));
@@ -24,14 +42,21 @@ Object.defineProperties(element.prototype,{
     },
     left : {
         get: function(){
-            return (point(this.x , this.y +(this.height/2)));
+            console.log(this.graphic.left);
+            
+            return this.graphic.left;
         }
     },
     right: {
         get:function() {
-            return (point(this.x+this.width,this.y+ (this.height/2)))
+            return this.graphic.right
         }
     }
+    // _x : {
+    //     value : this.ix,
+    //     writable : !0,
+    //     enumerable : !0
+    // },
 
 });
 

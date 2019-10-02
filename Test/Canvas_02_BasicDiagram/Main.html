@@ -6,17 +6,17 @@
 
     </canvas>
 </body>
-<script src="./Graphic_Cal.js"></script>
 <script src="./View_CanvStyle.js"></script>
 <script src="./View_CanvDraw.js"></script>
-<script src="./V_Draw.js"></script>
+<script src="./Graphic_Cal.js"></script>
 <script src="./M_Element.js"></script>
-<script src="./View_elementDraw.js"></script>
-<script src='./Node.js'></script>
+<script src='./M_Node.js'></script>
+<script src="./M_Layer.js"></script>
+<script src="./M_Link.js"></script>
+<script src="./V_Draw.js"></script>
 <script src="./Board_event.js"></script>
 <script src='./Controller.js'></script>
-<script src="./M_Link.js"></script>
-<!-- <script src="./View_Node.js"></script> -->
+
 
 
 <script>
@@ -34,13 +34,14 @@
 
     //======================================================================================
 
-    var diagram = [];
+    var diagram = new Layer;
     diagram.push(new element(10, 30, 30, 100, '0'));
     diagram.push(new element(50, 50, 100, 100, '1'));
     diagram.push(new element(200, 300, 50, 50, '2'));
     diagram.push(new element (500,600,200,200,'3'));
-    diagram[0].node.left.push(diagram[1].node.right);
-    diagram[1].node.right.push(diagram[3].node.right);
+    
+    diagram.element[0].node.left.push(diagram.element[1].node.right);
+    diagram.element[1].node.right.push(diagram.element[3].node.right);
 
     var selectBox = null;
     var Board = new Canv(d, diagram);
@@ -49,7 +50,7 @@
         var onElement = Board.isOnElement(e);
 
         // on no selection status:
-        if (!Board.selectedElements) {
+        if (!diagram.elementSelection) {
 
             if (onElement) {
                 // click on element
@@ -65,7 +66,7 @@
 
 
         // on selected status:
-        if (Board.selectedElements) {
+        if (diagram.elementSelection) {
 
             //click on elements control bar:
             var onNode = Board.isOnControl(e);
@@ -117,10 +118,7 @@
 
     Canvas.oncontextmenu = function (e) {
         var onElement = Board.isOnElement(e)
-        if (Board.onCreate) {
-            Board.onCreate = false;
-        }
-        if (onElement != undefined) {
+         if (onElement != undefined) {
             if (onElement.index == 0) {
                 diagram.shift()
             } else {
