@@ -12,19 +12,18 @@ function Canv(canvas, contentList) {
 }
 var cv = Canv.prototype;
 cv.magnetPoint = function (e) {
-    var result = { position: { x: e.pageX, y: e.pageY }, element: null }
+    p = point(e);
+    var result = { position: { x: p.x, y: p.y }, element: null }
     var magnetDist = this.magnetDist
     this.list.forEach(function (i) {
         if (!i.selected) {
             if (Di_lessThan(i.node.left.position, result.position, magnetDist)) {
-                result = {position: i.node.left.position, element:i.node.left};
-                // console.log(result);
+                result = {position: i.node.left.position, element:i.node.left.bundle};
                 
                 return false;
             }
             if (Di_lessThan(i.node.right.position, result.position, magnetDist)) {
-                result = { position: i.node.right.position, element: i.node.right };
-                // console.log(result);
+                result = { position: i.node.right.position, element: i.node.right.bundle };
                 
                 return false;
             }
@@ -40,18 +39,20 @@ cv.clear = function () {
 
 cv.redraw = function () {
     this.clear();
-    Draw(diagram.link,'links')
+    CanvDraw.t(5,5,100,diagram.elementSelection);
+    CanvStyle.Text;
+    diagram.link.forEach(j=>{
+        Draw(j);
+    });
     this.list.forEach(function (i) {
         Draw(i);
     })
 }
 
 
-
-
 cv.resetSelect = function () {
     this.list.forEach(function (i) {
-        i.selected = false;
+        i.unselect();
         // reset onControl statement
     })
     diagram.elementSelection = [];
@@ -67,16 +68,17 @@ cv.selectList = function () {
     return (s);
 }
 cv.isOnElement = function (e) {
-    Board.clear();
+    // Board.clear();
     var result = false;
-    this.list.forEach(function (i, j) {
-        i.OnElementDetect();
-        if (d.isPointInPath(e.pageX, e.pageY)) {
-            result = { element: i, index: j }
+    this.list.forEach(function (i) {
+        // i.OnElementDetect();      
+        if (i.graphic.isOn(e)) {
+            result = { element:i }
+            
             return false;// escape forEach
         }
     });
-    Board.redraw();
+    // Board.redraw();
     return result;
 }
 cv.isOnControl = function (e) {

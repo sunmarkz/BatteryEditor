@@ -8,7 +8,6 @@ function Draw(s, type = null) {
     input instanceof Node && d_node(input);
     input instanceof LinkBundle && d_bundleLink(input);
     input instanceof Link && d_link(input);
-    if (input instanceof Array && type == ('links')) { d_links(s); return;};
 
     function d_ele(el) {
         el.graphic.draw();  
@@ -37,14 +36,11 @@ function Draw(s, type = null) {
         CanvStyle.Link();
     }
     function d_links(s) {
-        s.forEach(i => {
-            Draw(i);
-        });
+            Draw(s);
     }
     function d_node(s) {
         
         s.graphic.draw();
-        // canv.arc(s.x, s.y, 8, 0, Math.PI * 2);
         CanvStyle.Node();
     }
     function dashLink(s) {
@@ -53,7 +49,7 @@ function Draw(s, type = null) {
     function d_text(s) {
         if (s.Text) {
             // if content text isnt null
-            var margin = 2;
+            var margin = 5;
             CanvStyle.Text();
             var Widthminmum = d.measureText(s.Text).width;
             if (Widthminmum + margin * 2 > s.width) {
@@ -61,7 +57,7 @@ function Draw(s, type = null) {
                 Draw(s);
                 return;
             }
-            d.fillText(s.Text, s.x + margin, s.y + 15 + margin, s.width - (margin * 2));
+            d.fillText(s.Text, s.x + margin, s.y + 30 + margin, s.width - (margin * 2));
 
         }
     }

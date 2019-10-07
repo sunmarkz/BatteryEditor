@@ -2,12 +2,17 @@ function Node(element, type = ('left' | 'right')) {
     this.parentElement = element;
     this.type = type;
     this.bundle = new LinkBundle(this);
-    
-    this.graphic = new Graphic('c', 
-        this.type == 'left' ? this.parentElement.graphic.left.x : this.parentElement.graphic.right.x, 
-        this.type == 'left' ? this.parentElement.graphic.left.y : this.parentElement.graphic.right.y,
-    8);
-}
+    if(this.type=='left'){
+        this.graphic = new Graphic(this, 'c', 
+        this.parentElement.graphic.left.x, 
+        this.parentElement.graphic.left.y,10);
+    }else{
+        this.graphic = new Graphic(this, 'c',
+            this.parentElement.graphic.right.x,
+            this.parentElement.graphic.right.y, 10);
+    }
+ }
+
 Node.prototype.update = function(){
     this.graphic.x = this.type == 'left' ? this.parentElement.graphic.left.x : this.parentElement.graphic.right.x;
     this.graphic.y = this.type == 'left' ? this.parentElement.graphic.left.y : this.parentElement.graphic.right.y;
@@ -44,7 +49,8 @@ Object.defineProperties(Node.prototype, {
 })
 
 Node.prototype.isOnNode = function (e) {
-    if (Di_lessThan(this.position, { x: e.pageX, y: e.pageY }, Board.ConnectionNodeSize * 2)) {
+    p= point(e);
+    if (Di_lessThan(this.position, { x: p.x, y: p.y }, Board.ConnectionNodeSize * 2)) {
         return true;
     } else {
         return false;
@@ -57,10 +63,10 @@ Node.prototype.isOnNode = function (e) {
 Node.prototype.drawPointLine = function (mouse) {
     // when on dragging, draw pointed line to mouse Location
     d.beginPath();
-    d.setLineDash([2, 2]);
     d.moveTo(this.position.x, this.position.y);
     d.lineTo(mouse.x, mouse.y);
-    d.stroke();
+    CanvStyle.LinkTo();
+
 }
 
 

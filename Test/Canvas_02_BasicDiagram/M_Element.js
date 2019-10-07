@@ -1,5 +1,5 @@
 function element(x, y, width=50, height=50, Text = null) {
-    this.graphic = new Graphic('rect',x,y,width,height);
+    this.graphic = new Graphic(this,'rect',x,y,width,height);
     this.selected = false;
     this.Text = Text;
     this.node = { left: new Node(this, 'left'), right: new Node(this, 'right') }
@@ -42,8 +42,6 @@ Object.defineProperties(element.prototype,{
     },
     left : {
         get: function(){
-            console.log(this.graphic.left);
-            
             return this.graphic.left;
         }
     },
@@ -52,11 +50,7 @@ Object.defineProperties(element.prototype,{
             return this.graphic.right
         }
     }
-    // _x : {
-    //     value : this.ix,
-    //     writable : !0,
-    //     enumerable : !0
-    // },
+
 
 });
 
@@ -64,12 +58,12 @@ Object.defineProperties(element.prototype,{
 
 
 
-element.prototype.OnElementDetect = function () {
-    d.beginPath();
-    d.rect(this.x, this.y, this.width, this.height);
-    d.closePath();
+// element.prototype.OnElementDetect = function () {
+//     d.beginPath();
+//     d.rect(this.x, this.y, this.width, this.height);
+//     d.closePath();
 
-}
+// }
 
 element.prototype.isOnControl = function (e) {
     if (this.node.left.isOnNode(e)) { return this.node.left; }
@@ -99,4 +93,18 @@ element.prototype.Draw_onControl = function () {
     // this.node.left.drawLinkControl();
     // this.node.right.drawLinkControl();
 
+}
+element.prototype.select = function(){
+
+        this.selected = true;
+        //in case repeated 
+        diagram.elementSelection.add(this);
+        
+}
+element.prototype.unselect = function(){
+    if(this.selected){
+
+        this.selected = false;
+            diagram.elementSelection.delete(this);
+    }
 }

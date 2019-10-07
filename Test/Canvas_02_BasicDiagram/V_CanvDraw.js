@@ -11,7 +11,7 @@ var CanvDraw = {
         d.closePath();
     },
     t:function(x,y,width,t){
-        var margin = 2;
-        d.fillText(t, x + margin, y + 15 + margin, width - (margin * 2));
+        var margin = 5;
+        d.fillText(t, x + margin, y + 30 + margin, width - (margin * 2));
     }
 }

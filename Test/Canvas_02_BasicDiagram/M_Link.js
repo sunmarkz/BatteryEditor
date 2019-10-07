@@ -4,7 +4,7 @@ function Link(from, to) {
     to instanceof LinkBundle && (this.to = to);
     to instanceof Node && (this.to = to.bundle);
     this.type = 'pl'
-    this.graphic_C = new Graphic('c',this.center.x,this.center.y,3);
+    this.graphic_C = new Graphic(this,'c',this.center.x,this.center.y,5);
 }
 Link.prototype.update = function (){
     this.graphic_C.x = this.center.x;
@@ -56,16 +56,22 @@ Link.prototype.reverse = function () {
     this.from = this.to;
     this.to = temp;
 }
-
+Link.prototype.del = function(){
+    this.from.unLink(this);
+    this.to.unLink(this);
+    diagram.del(this);
+    
+}
 
 
 
 function LinkBundle(parentNode) {
-    this.linkTo = [];
-    this.linked = [];
+    this.linkTo = new Set();
+    this.linked = new Set();
     this.parentNode = parentNode;
     this.parentElement = parentNode.parentElement;
 }
+
 
 Object.defineProperties(LinkBundle.prototype, {
     position: {
@@ -100,25 +106,18 @@ Object.defineProperties(LinkBundle.prototype, {
 })
 
 LinkBundle.prototype.push = function (link) {
-     input = link;
-    link instanceof Node && (input = input.bundle);
+    var input = link;
+    link instanceof Node && (input = link.bundle);
     // if input is Node transfer to its bundle
-    if (!this.isInList(input)) {
         var l = new Link(this, input);
-        this.linkTo.push(l);
-        input.linked.push(l);
+        this.linkTo.add(l);
+        input.linked.add(l);
         diagram.push(l);
-    }
     
 }
 
-
-
-LinkBundle.prototype.isInList = function (link) {
-    var link = link
-    var result = !1;
-    this.linkTo.forEach(i => {
-        link == i && (result = !0);
-    });
-    return result;
+LinkBundle.prototype.unLink = function (s){
+    this.linkTo.delete(s);
+    this.linked.delete(s);
 }
+

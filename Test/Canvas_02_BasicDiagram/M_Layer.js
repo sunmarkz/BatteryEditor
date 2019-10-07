@@ -1,28 +1,31 @@
 function Layer (){
-    this.element = [];
-    this.link = [];
-    this.elementSelection = [];
+    this.element = new Set();
+    this.link = new Set();
+    this.elementSelection = new Set();
     
 }
 
 Layer_ = Layer.prototype;
 Layer_.push = function(s) {
-    if (s instanceof element && !(s in this.element)){
-        this.element.push(s);
+
+    if (s instanceof element ){
+        this.element.add(s);
        return ;
    }
-    if (s instanceof Link && !(s in this.link)){
-       this.link.push(s);
+    if (s instanceof Link ){
+       this.link.add(s);
        return;
    }
 }
 Layer_.del  = function (s){
     if (s instanceof element){
-        remove(s, this.element);
-        return;
+       this.element.delete(s);
+       this.elementSelection.delete(s);
+       
+       return;
     }
     if (s instanceof Link){
-        remove(s,this.link);
+        this.link.delete(s);
         return;
     }
 }
