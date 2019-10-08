@@ -2,36 +2,44 @@
 var Overall = {
     isOn: function (e) {
         var list = this.operateList();
-        var p =e;
+        var p = e;
 
         var on = null;
-        list.forEach(
-            i => {
-                if (i instanceof Link == true) {
-                    if (i.graphic_C.isOn(p)) {
-                        on = i;
-                        return false;
-                    }
-
-                } else {
-                    if (i.graphic.isOn(p)) {
-                        on = i;
-                        i instanceof Node && console.log('NODE');
-                        
-                    }
-
+        for (let i = 0; i < list.length; i++) {
+            var j=list[i];
+            if (j instanceof Link == true) {
+                if (j.graphic_C.isOn(p)) {
+                    on = j;
+                    break;
                 }
-                return on!=null? false: true;
-            });
-            
+                return on != null ? false : true;
+
+            }
+            else if (j instanceof Graphic == true) {
+                if (j.isOn(p)) {
+                    on = j;
+                    console.log('got it !!!');
+
+                    break;
+                }
+                return on != null ? false : true;
+
+            }
+            else if (j.graphic.isOn(p)) {
+                on = j;
+                break;
+            }
+        }
+
         return on;
     },
     operateList: function () {
-        
+
         var result = new Set();
-            if (diagram.elementSelection.size != 0) {
+        if (diagram.elementSelection.size != 0) {
 
             diagram.elementSelection.forEach(i => {
+                result.add(i.graphic_C);
                 result.add(i.node.right);
                 result.add(i.node.left);
                 List.merge(result, i.node.left.bundle.linkTo);
@@ -41,8 +49,7 @@ var Overall = {
             });
 
             List.merge(result, diagram.element)
-            console.log(result);
-            
+
             return (result);
         } else {
             return diagram.element;

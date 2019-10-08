@@ -1,4 +1,4 @@
-function Graphic(parent, type = ("rect" | 'c'), x, y, w_r = 0, h = 0) {
+function Graphic(parent, type = ("rect" | 'c'| 'tri'), x, y, w_r = 0, h = 0) {
     this.parent = parent;
     this.x = x;
     this.y = y;
@@ -10,6 +10,9 @@ function Graphic(parent, type = ("rect" | 'c'), x, y, w_r = 0, h = 0) {
     if (this.type == 'c') {
         this.radius = w_r;
     }
+    if(this.type == 'tri_rbot'){
+        this.edge = w_r;
+    }
 }
 Object.defineProperties(Graphic.prototype, {
     position:{
@@ -19,11 +22,16 @@ Object.defineProperties(Graphic.prototype, {
     },
     top: {
         get: function () {
-            return (this.y + (this.type == 'rect' ? 0 : this.radius));
+            if(this.type=='tri_rbot'){return this.y-this.edge}
+            if(this.type=='rect'){return this.y}
+            if(this.type=='c'){return this.y-this.radius}
         }
     },
     bot: {
         get: function () {
+            if(this.type=='rect'){return this.y+this.height}
+            if(this.type == 'c'){return this.y+this.radius}
+            if(this.type=='tri_rbot'){}
             return (this.y + (this.type == 'rect' ? this.height : this.radius));
         }
     },

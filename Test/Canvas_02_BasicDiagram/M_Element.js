@@ -2,22 +2,36 @@ function element(x, y, width=50, height=50, Text = null) {
     this.graphic = new Graphic(this,'rect',x,y,width,height);
     this.selected = false;
     this.Text = Text;
-    this.node = { left: new Node(this, 'left'), right: new Node(this, 'right') }
+    this.node = { left: new Node(this, 'left'), right: new Node(this, 'right') };
+    this.graphic_C = new Graphic(this,'rect',this.right.x-15,this.y+this.height-15,15,15);
 }
 
 //Content Draw funciton
 Object.defineProperties(element.prototype,{
     x: {
         get:function(){return this.graphic.x},
-        set: function(input){ this.graphic.x = input}
+        set: function(input){ 
+            this.graphic.x = input;
+            this.graphic_C.x = this.rightBot.x - this.graphic_C.width;
+        }
     },
     y:{
         get: function(){return this.graphic.y},
-        set : function(input){this.graphic.y = input}
+        set : function(input){
+            this.graphic.y = input;
+            this.graphic_C.y = this.rightBot.y - this.graphic_C.height;
+        }
+    },
+    rightBot:{
+        get:function(){
+            return (point(this.x+this.width,this.y+this.height));
+        }
     },
     width :{
         set:function(input){
-            this.graphic.width = input;
+            this.graphic.width = input > 50 ? input : 50;
+            this.graphic_C.x = this.rightBot.x;
+
         },
         get : function(){
             return this.graphic.width;
@@ -26,9 +40,12 @@ Object.defineProperties(element.prototype,{
     height : {
         get : function (){
             return this.graphic.height;
+
         },
         set :function (input) {
-            this.graphic.height = input;
+            this.graphic.height = input > 50 ? input : 50;
+            this.graphic_C.y = this.rightBot.y;
+
         }
     },
     center : {

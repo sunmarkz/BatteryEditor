@@ -5,28 +5,25 @@ function EventHandler(CANV) {
         p = point(e);
         var onElement = Overall.isOn(p);
         onElement instanceof Link && doEvent.remove(onElement);
-        onElement== null &&doEvent.create(new element(p.x - 25, p.y - 25, 50, 50))
+        onElement == null && doEvent.create(new element(p.x - 25, p.y - 25, 50, 50))
     };
 
     CANV.onmousedown = function (e) {
         move = false;
         var p = point(e);
         onElement = Overall.isOn(p);
-        console.log(onElement);
-        
-
         CANV.onmousemove = function () {
-            move =true;
-            dragging(p, onElement) 
+            move = true;
+            dragging(p, onElement)
         };
         return false;
     }
     CANV.onclick = function (e) {
-        var p =point (e);
+        var p = point(e);
         onElement = Overall.isOn(p);
         CANV.onmousemove = null;
-        move&& Board.redraw();
-        !move&&click(onElement);
+        move && Board.redraw();
+        !move && click(onElement);
 
     }
     function click(onElement) {
@@ -49,14 +46,8 @@ function EventHandler(CANV) {
         }
     }
     function dragging(k, onElement) {
-        if (onElement instanceof element) {
-
-            if(onElement.selected==false){
-                doEvent.singleSelect(onElement);
-            }
-            doEvent.move(onElement, k);
-            return;
-        }
+        console.log(onElement);
+        
         if (onElement instanceof Node) {
             doEvent.create(onElement);
             return;
@@ -65,7 +56,18 @@ function EventHandler(CANV) {
             doEvent.multiplySelect(k);
             return;
         }
-        
+        if (onElement instanceof element) {
+
+            if (onElement.selected == false) {
+                doEvent.singleSelect(onElement);
+            }
+            doEvent.move(onElement, k);
+            return;
+        }
+        if (onElement instanceof Graphic && onElement.parent instanceof element) {
+            doEvent.size(onElement, k);
+        }
+
         return false;
 
     }

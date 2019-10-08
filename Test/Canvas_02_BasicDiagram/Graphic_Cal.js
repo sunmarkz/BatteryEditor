@@ -28,8 +28,6 @@ function Di_lessThan(P1, P2, c, lessThan = true) {
 
     // P1 to P2 < c
     if (lessThan) {
-        console.log(x);
-        
         return (x);
     }
     else {
