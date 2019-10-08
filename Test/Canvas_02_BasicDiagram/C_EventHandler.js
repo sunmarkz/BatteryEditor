@@ -2,83 +2,56 @@
 function EventHandler(CANV) {
     var onElement;
     CANV.ondblclick = function (e) {
-        p = point(e);
-        var onElement = Overall.isOn(p);
-        onElement instanceof Link && doEvent.remove(onElement);
-        onElement == null && doEvent.create(new element(p.x - 25, p.y - 25, 50, 50))
+        dblclick(e);
     };
 
     CANV.onmousedown = function (e) {
-        move = false;
         var p = point(e);
+        move = p;
         onElement = Overall.isOn(p);
-        CANV.onmousemove = function () {
-            move = true;
-            dragging(p, onElement)
+        CANV.onmousemove = function (x) {
+            move = x;
+            dragging(p, onElement);
         };
-        return false;
     }
-    CANV.onclick = function (e) {
-        var p = point(e);
-        onElement = Overall.isOn(p);
+    CANV.onclick = function (d) {
         CANV.onmousemove = null;
+        move = point(move)
+        var p = point(d);
+        move = !(p.x == move.x && p.y == move.y);
+        onElement = Overall.isOn(p);
         move && Board.redraw();
         !move && click(onElement);
 
+
     }
     function click(onElement) {
-        if (onElement instanceof Node) {
-            return;
-        }
-        if (onElement instanceof element) {
-            doEvent.singleSelect(onElement);
+        console.log('click', onElement);
 
-            return;
-        }
-        if (onElement instanceof Link) {
-            doEvent.remove(onElement);
-            return;
-        }
-        if (onElement == null) {
-            diagram.elementSelection.size != 0 && doEvent.resetSelect();
-            Board.redraw();
-            return;
-        }
+        (onElement instanceof element) && doEvent.singleSelect(onElement);
+        (onElement instanceof Link) && doEvent.remove(onElement);
+        (onElement == null) && diagram.elementSelection.size != 0 && doEvent.resetSelect();
+        Board.redraw();
     }
     function dragging(k, onElement) {
-        console.log(onElement);
-        
-        if (onElement instanceof Node) {
-            doEvent.create(onElement);
-            return;
-        }
-        if (onElement == null) {
-            doEvent.multiplySelect(k);
-            return;
-        }
+        (onElement instanceof Node) && doEvent.create(onElement);
+        (onElement == null) && doEvent.multiplySelect(k);
         if (onElement instanceof element) {
-
             if (onElement.selected == false) {
                 doEvent.singleSelect(onElement);
             }
             doEvent.move(onElement, k);
-            return;
         }
-        if (onElement instanceof Graphic && onElement.parent instanceof element) {
-            doEvent.size(onElement, k);
-        }
-
-        return false;
+        (onElement instanceof Graphic && onElement.parent instanceof element) && doEvent.size(onElement, k);
 
     }
     function dblclick(e) {
         p = point(e);
 
         var onElement = Overall.isOn(p);
-        if (onElement == null) {
-            doEvent.create(new element(p.x - 25, p.y - 25));
-        }
-
+        (onElement == null) && doEvent.create(new element(p.x - 25, p.y - 25));
+        onElement instanceof Node && doEvent.remove(onElement);
+        Board.redraw();
         return;
     }
 }

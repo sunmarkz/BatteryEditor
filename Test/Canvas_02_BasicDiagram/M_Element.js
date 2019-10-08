@@ -3,7 +3,7 @@ function element(x, y, width=50, height=50, Text = null) {
     this.selected = false;
     this.Text = Text;
     this.node = { left: new Node(this, 'left'), right: new Node(this, 'right') };
-    this.graphic_C = new Graphic(this,'rect',this.right.x-15,this.y+this.height-15,15,15);
+    this.graphic_C = new Graphic(this,'c',this.right.x,this.y+this.height,8);
 }
 
 //Content Draw funciton
@@ -12,14 +12,14 @@ Object.defineProperties(element.prototype,{
         get:function(){return this.graphic.x},
         set: function(input){ 
             this.graphic.x = input;
-            this.graphic_C.x = this.rightBot.x - this.graphic_C.width;
+            this.graphic_C.x = this.rightBot.x ;
         }
     },
     y:{
         get: function(){return this.graphic.y},
         set : function(input){
             this.graphic.y = input;
-            this.graphic_C.y = this.rightBot.y - this.graphic_C.height;
+            this.graphic_C.y = this.rightBot.y
         }
     },
     rightBot:{

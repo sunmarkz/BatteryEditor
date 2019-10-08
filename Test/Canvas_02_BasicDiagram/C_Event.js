@@ -2,7 +2,6 @@ var doEvent = {
     create: function (input) {
         if (input instanceof element == true) {
             diagram.push(input);
-            Board.redraw();
             return;
         }
         if (input instanceof Node == true) {
@@ -30,8 +29,9 @@ var doEvent = {
         if (input instanceof Link) {
             input.del();
         }
-        Board.redraw();
-
+        if(input instanceof Node){
+            input.bundle.clear();
+        }
     },
     size: function (input = Graphic, e = null) {
         if (input.parent instanceof element) {
@@ -106,7 +106,6 @@ var doEvent = {
     singleSelect: function (input) {
         this.resetSelect();
         input.select();
-        Board.redraw();
     },
     resetSelect: function () {
         diagram.elementSelection.forEach(function (i) {

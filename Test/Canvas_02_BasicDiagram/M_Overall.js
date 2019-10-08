@@ -1,9 +1,8 @@
 
 var Overall = {
     isOn: function (e) {
-        var list = this.operateList();
+        var list = [...this.operateList()];
         var p = e;
-
         var on = null;
         for (let i = 0; i < list.length; i++) {
             var j=list[i];
@@ -12,25 +11,18 @@ var Overall = {
                     on = j;
                     break;
                 }
-                return on != null ? false : true;
-
             }
             else if (j instanceof Graphic == true) {
                 if (j.isOn(p)) {
                     on = j;
-                    console.log('got it !!!');
-
                     break;
                 }
-                return on != null ? false : true;
-
             }
             else if (j.graphic.isOn(p)) {
                 on = j;
                 break;
             }
         }
-
         return on;
     },
     operateList: function () {
