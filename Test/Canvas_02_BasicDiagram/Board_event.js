@@ -7,8 +7,6 @@ function Canv(canvas, contentList) {
     this.onControl = null;
     this.magnetDist = 30;
     this.ConnectionNodeSize = 8;
-
-
 }
 var cv = Canv.prototype;
 cv.magnetPoint = function (e) {

@@ -27,6 +27,8 @@
 <script src="./C_Event.js"></script>
 <script src="./Board_event.js"></script>
 <script src='./Controller.js'></script>
+<script src='./Save.js'></script>
+
 
 
 
@@ -47,7 +49,6 @@
     d = Canvas.getContext('2d');
 
 
-
     //======================================================================================
 
     diagram = new Layer;
@@ -63,6 +64,8 @@
     var Board = new Canv(d, diagram);
     Board.redraw();
     var eventListener = new EventHandler(Canvas);
+    Save_();
+
     /*
     Canvas.onmousedown = function (e) {
         var onElement = Board.isOnElement(e);

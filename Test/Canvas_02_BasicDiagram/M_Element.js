@@ -4,6 +4,7 @@ function element(x, y, width=50, height=50, Text = null) {
     this.Text = Text;
     this.node = { left: new Node(this, 'left'), right: new Node(this, 'right') };
     this.graphic_C = new Graphic(this,'c',this.right.x,this.y+this.height,8);
+    this.id = diagram.element.size ;
 }
 
 //Content Draw funciton
