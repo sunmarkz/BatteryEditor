@@ -37,8 +37,6 @@ cv.clear = function () {
 
 cv.redraw = function () {
     this.clear();
-    CanvDraw.t(5,5,100,diagram.elementSelection);
-    CanvStyle.Text;
     diagram.link.forEach(j=>{
         Draw(j);
     });

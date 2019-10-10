@@ -83,16 +83,6 @@ function drawCtrl(s) {
 
     function dc_element(s) {
 
-        // var left = s.node.left;
-        // var right = s.node.right;
-        // canv.beginPath();
-        // canv.arc(left.position.x, left.position.y, 8, 0, Math.PI * 2);
-        // canv.closePath();
-        // CanvStyle.Node();
-        // canv.beginPath();
-        // canv.arc(right.position.x, right.position.y, 8, 0, Math.PI * 2);
-        // canv.closePath();
-        // CanvStyle.Node();
         s.graphic_C.draw();
         CanvStyle.CtrlDot();
     }

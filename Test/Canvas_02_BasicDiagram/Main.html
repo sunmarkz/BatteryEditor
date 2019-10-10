@@ -9,8 +9,12 @@
 </style>
 
 <body style="margin:0;padding:0">
-    <canvas id="MyCanvas" class='border' stroke='black'>
+    <div id='bar'>
+        <input type="file" id="files" />
+        <input type="button" id="export" value="保存" />
 
+    </div>
+        <canvas id="MyCanvas"  stroke='black'>
     </canvas>
 </body>
 <script src="./V_CanvStyle.js"></script>
@@ -28,7 +32,7 @@
 <script src="./Board_event.js"></script>
 <script src='./Controller.js'></script>
 <script src='./Save.js'></script>
-
+<script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.js"></script>
 
 
 
@@ -37,14 +41,23 @@
     // Initialization
     var Canvas = document.getElementById('MyCanvas');
     var magnetDistance = 100;
+    var Bar = document.getElementById('bar');
+
+
     var CanvQualityEnhanceVector = 1.5;
-    var CanvQualityScaleVector =  (Canvas.width / window.innerWidth.width);
-
-    Canvas.height = window.innerHeight * CanvQualityEnhanceVector;
-    Canvas.width = window.innerWidth * CanvQualityEnhanceVector;
-    Canvas.style.width = (window.innerWidth+ 'px');
-    Canvas.style.heigh = (window.innerHeight + 'px');
-
+    var frame = document.getElementById('Canvframe');
+    Canvas.style.position = 'absolute';
+    Bar.style.position = 'absolute';
+    window.addEventListener("resize", resizeCanvas, false);
+    resizeCanvas()
+    
+    function resizeCanvas() {
+        Canvas.style.width = (window.innerWidth + 'px');
+        Canvas.style.heigh = (window.innerHeight -22 + 'px');
+        w = Canvas.width = window.innerWidth * CanvQualityEnhanceVector;
+        h = Canvas.height = (window.innerHeight-22) * CanvQualityEnhanceVector;
+        Bar.style.top = (window.innerHeight - 22 + 'px')
+    }
 
     d = Canvas.getContext('2d');
 
@@ -52,13 +65,10 @@
     //======================================================================================
 
     diagram = new Layer;
-    diagram.push(new element(10, 30, 30, 100, '0'));
-    diagram.push(new element(50, 50, 100, 100, '1'));
-    diagram.push(new element(200, 300, 50, 50, '2'));
-    diagram.push(new element(500, 600, 200, 200, '3'));
-
-    // diagram.element[0].node.left.push(diagram.element[1].node.right);
-    // diagram.element[1].node.right.push(diagram.element[3].node.right);
+    // diagram.push(new element(10, 30, 30, 100, '0'));
+    // diagram.push(new element(50, 50, 100, 100, '1'));
+    // diagram.push(new element(200, 300, 50, 50, '2'));
+    // diagram.push(new element(500, 600, 200, 200, '3'));
 
     var selectBox = null;
     var Board = new Canv(d, diagram);
@@ -66,90 +76,6 @@
     var eventListener = new EventHandler(Canvas);
     Save_();
 
-    /*
-    Canvas.onmousedown = function (e) {
-        var onElement = Board.isOnElement(e);
-
-        // on no selection status:
-        if (!diagram.elementSelection) {
-
-            if (onElement) {
-                // click on element
-                Draw_Select(onElement.element);// select element
-                Draw_MoveElements(e);
-                return;
-            } else {
-                Draw_SelectionBox(e); // call selection Box
-
-            }
-            //click on background nothing happen
-        }
-
-
-        // on selected status:
-        if (diagram.elementSelection) {
-
-            //click on elements control bar:
-            var onNode = Board.isOnControl(e);
-            if (onNode) {
-                Connection_onMouseDown(e, onNode)
-                //call element draw_connection function
-                return;// end continue other condition
-            }
-
-            //click on background:
-            if (!onElement) {
-                //click on background:
-                Board.resetSelect(); // reset selection
-                Board.redraw();
-                Draw_SelectionBox(e);
-                return; // end continue other condition
-            }
-
-            if (onElement) {
-                // click on element:
-                if (onElement.element.selected) {
-
-                    Draw_MoveElements(e);
-                    return;
-                } else {
-
-                    Board.resetSelect();
-                    Draw_Select(onElement.element);
-                    Board.redraw();
-                    Draw_MoveElements(e);
-                    return;
-                }
-            }
-        }
-
-
-    }
-
-
-    Canvas.ondblclick = function (onclick_e) {
-        var onElement = Board.isOnElement(onclick_e);
-        if (!onElement) {
-            Draw_CreateElement(onclick_e);
-            Board.redraw();
-            //double click in element event
-        }
-    }
-
-
-    Canvas.oncontextmenu = function (e) {
-        var onElement = Board.isOnElement(e)
-         if (onElement != undefined) {
-            if (onElement.index == 0) {
-                diagram.shift()
-            } else {
-                diagram.splice(onElement.index, onElement.index);
-            }
-            Board.redraw();
-        }
-        return false; // Cancel defalut right click menu
-    }
-    */
 </script>
 
 </html>
