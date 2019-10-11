@@ -114,5 +114,43 @@ var doEvent = {
         });
 
         diagram.elementSelection.clear();
+    },
+    textEdit: function (input){
+        // var text = document.querySelector('textarea');
+        // var textarea = document.querySelector('textarea');
+        // textarea!=null && body.removeChild(textarea);
+        var text = document.createElement('textarea');
+        text.setAttribute('elementID', input.id);
+        text.id = 'ElementAtt';
+        text.value = input.Text;
+        
+        var t = text.style;
+        t.left = input.x / CanvQualityEnhanceVector+'px';
+        t.top = input.y / CanvQualityEnhanceVector+'px';
+        t.width = input.width / CanvQualityEnhanceVector +'px';
+        t.height = input.height / CanvQualityEnhanceVector +'px';
+        t.position = 'absolute';
+        t.margin = "0";
+        t.padding = "5px";
+        t.border = "0";
+        t.outline = "none";
+        t.whiteSpace = "pre-wrap";
+        t.fontSize = 18 +'px';
+        t.overflow = "hidden";
+        text.onblur = function(){ 
+            
+            doEvent.textCancel(this, input);
+        } ;
+        text.focus();
+        text.select();
+    body.appendChild(text);  
+    text.focus();
+    },
+    textCancel: function (text, onElement){
+        onElement.Text = text.value;
+        onElement.width = parseFloat(text.style.width) * CanvQualityEnhanceVector;
+        onElement.height = parseFloat(text.style.height) * CanvQualityEnhanceVector;
+        body.removeChild(text);
+        Board.redraw();
     }
 }

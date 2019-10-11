@@ -14,7 +14,7 @@
         <input type="button" id="export" value="保存" />
 
     </div>
-        <canvas id="MyCanvas"  stroke='black'>
+    <canvas id="MyCanvas" stroke='black'>
     </canvas>
 </body>
 <script src="./V_CanvStyle.js"></script>
@@ -37,6 +37,7 @@
 
 
 <script>
+    var body = document.querySelector('body');
 
     // Initialization
     var Canvas = document.getElementById('MyCanvas');
@@ -50,12 +51,12 @@
     Bar.style.position = 'absolute';
     window.addEventListener("resize", resizeCanvas, false);
     resizeCanvas()
-    
+
     function resizeCanvas() {
         Canvas.style.width = (window.innerWidth + 'px');
-        Canvas.style.heigh = (window.innerHeight -22 + 'px');
+        Canvas.style.heigh = (window.innerHeight - 22 + 'px');
         w = Canvas.width = window.innerWidth * CanvQualityEnhanceVector;
-        h = Canvas.height = (window.innerHeight-22) * CanvQualityEnhanceVector;
+        h = Canvas.height = (window.innerHeight - 22) * CanvQualityEnhanceVector;
         Bar.style.top = (window.innerHeight - 22 + 'px')
     }
 
@@ -65,10 +66,10 @@
     //======================================================================================
 
     diagram = new Layer;
-    // diagram.push(new element(10, 30, 30, 100, '0'));
-    // diagram.push(new element(50, 50, 100, 100, '1'));
-    // diagram.push(new element(200, 300, 50, 50, '2'));
-    // diagram.push(new element(500, 600, 200, 200, '3'));
+    diagram.push(new element(10, 30, 30, 100, '0'));
+    diagram.push(new element(50, 50, 100, 100, '1'));
+    diagram.push(new element(200, 300, 50, 50, '2'));
+    diagram.push(new element(500, 600, 200, 200, '3'));
 
     var selectBox = null;
     var Board = new Canv(d, diagram);

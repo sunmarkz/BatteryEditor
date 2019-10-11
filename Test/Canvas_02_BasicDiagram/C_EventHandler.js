@@ -26,7 +26,6 @@ function EventHandler(CANV) {
 
     }
     function click(onElement) {
-        console.log('click', onElement);
 
         (onElement instanceof element) && doEvent.singleSelect(onElement);
         (onElement instanceof Link) && doEvent.remove(onElement);
@@ -51,6 +50,7 @@ function EventHandler(CANV) {
         var onElement = Overall.isOn(p);
         (onElement == null) && doEvent.create(new element(p.x - 25, p.y - 25));
         onElement instanceof Node && doEvent.remove(onElement);
+        onElement instanceof element && doEvent.textEdit(onElement);
         Board.redraw();
         return;
     }
