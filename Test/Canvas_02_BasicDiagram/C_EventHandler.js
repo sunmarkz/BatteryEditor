@@ -10,20 +10,18 @@ function EventHandler(CANV) {
         move = p;
         onElement = Overall.isOn(p);
         CANV.onmousemove = function (x) {
-            move = x;
+            var move = x;
             dragging(p, onElement);
         };
     }
     CANV.onclick = function (d) {
         CANV.onmousemove = null;
-        move = point(move)
+        move = point(move);
         var p = point(d);
         move = !(p.x == move.x && p.y == move.y);
         onElement = Overall.isOn(p);
         move && Board.redraw();
         !move && click(onElement);
-
-
     }
     function click(onElement) {
 

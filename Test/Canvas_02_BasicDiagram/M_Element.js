@@ -3,7 +3,7 @@ function element(x, y, width=50, height=50, Text = null) {
     this.selected = false;
     this.Text = Text;
     this.node = { left: new Node(this, 'left'), right: new Node(this, 'right') };
-    this.graphic_C = new Graphic(this,'squ',this.right.x,this.y+this.height,15);
+    this.graphic_C = new Graphic(this,'squ',this.right.x,this.y+this.height,8);
     this.id = diagram.element.size ;
 }
 
@@ -89,28 +89,9 @@ element.prototype.isOnControl = function (e) {
 }
 
 
-element.prototype.textDraw = function () {
-    if (this.Text) {
-        // if content text isnt null
-        var margin = 2;
-        CanvStyle.Text();
-        var Widthminmum = d.measureText(this.Text).width;
-        if (Widthminmum + margin * 2 > this.width) {
-            this.width = Widthminmum + margin * 2;
-            this.draw();
-        }
-        d.fillText(this.Text, this.x + margin, this.y + 15 + margin, this.width - (margin * 2));
 
-    }
-}
-element.prototype.Draw_onControl = function () {
-    CanvStyle.ElementSelected();
-    Draw(this.node.left);
-    Draw(this.node.right);
-    // this.node.left.drawLinkControl();
-    // this.node.right.drawLinkControl();
 
-}
+
 element.prototype.select = function(){
 
         this.selected = true;

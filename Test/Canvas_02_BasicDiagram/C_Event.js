@@ -32,6 +32,16 @@ var doEvent = {
         if(input instanceof Node){
             input.bundle.clear();
         }
+        if(input =='element'){
+            
+            diagram.elementSelection.forEach(i=>{
+                diagram.element.delete(i);
+                i.node.left.bundle.clear();
+                i.node.right.bundle.clear();
+            });
+            diagram.elementSelection.clear();
+
+        }
     },
     size: function (input = Graphic, e = null) {
         if (input.parent instanceof element) {

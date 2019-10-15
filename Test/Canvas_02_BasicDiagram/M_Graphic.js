@@ -92,7 +92,7 @@ Object.defineProperties(Graphic.prototype, {
 Graphic.prototype.isOn = function (e) {
     let ex = e.x;
     let ey = e.y;
-    const senseArea = 5;
+    const senseArea = 2;
     if (this.type == 'rect' ) {
         return (
             this.left.x - senseArea <= ex &&
@@ -103,10 +103,10 @@ Graphic.prototype.isOn = function (e) {
 
     if (this.type ==  'squ') {
         return (
-            this.x-(this.edge) - senseArea <= ex &&
-            this.x+(this.edge )- senseArea >= ex &&
-            this.top-(this.edge )- senseArea < ey &&
-            this.bot + (this.edge )+ senseArea > ey);
+            this.x-(this.edge) - senseArea < ex &&
+            this.x+(this.edge )- senseArea > ex &&
+            this.top- senseArea < ey &&
+            this.bot+ senseArea > ey);
     }
     if (this.type == 'c') {
         let result = Di_lessThan(this.center, e, this.radius + senseArea);
@@ -123,10 +123,10 @@ Graphic.prototype.draw = function () {
         return;
     }
     if (this.type == 'squ') {
-        CanvDraw.rect(this.x - (this.edge / 2),
-            this.y - (this.edge / 2),
-            this.edge,
-            this.edge);
+        CanvDraw.rect(this.x - (this.edge),
+            this.y - (this.edge),
+            this.edge*2,
+            this.edge*2);
         return;
     }
 

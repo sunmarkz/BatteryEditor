@@ -89,16 +89,6 @@ function Draw(s, type = null) {
                                 
             }
 
-        //     // if content text isnt null
-        //     var margin = 5;
-        //     CanvStyle.Text();
-        //     var Widthminmum = d.measureText(text.Text).width;
-        //     if (Widthminmum + margin * 2 > text.width) {
-        //         text.width = Widthminmum + margin * 2;
-        //         Draw(text);
-        //         return;
-        //     }
-        //     d.fillText(text.Text, text.x + margin, text.y + 30 + margin, text.width - (margin * 2));
 
         }
     }
