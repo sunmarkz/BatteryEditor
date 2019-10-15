@@ -133,9 +133,9 @@ var doEvent = {
         t.margin = "0";
         t.padding = "5px";
         t.border = "0";
-        t.outline = "none";
+        t.outline = "1";
         t.whiteSpace = "pre-wrap";
-        t.fontSize = 18 +'px';
+        t.fontSize = 17 +'px';
         t.overflow = "hidden";
         text.onblur = function(){ 
             

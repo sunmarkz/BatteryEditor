@@ -3,7 +3,7 @@ function element(x, y, width=50, height=50, Text = null) {
     this.selected = false;
     this.Text = Text;
     this.node = { left: new Node(this, 'left'), right: new Node(this, 'right') };
-    this.graphic_C = new Graphic(this,'c',this.right.x,this.y+this.height,8);
+    this.graphic_C = new Graphic(this,'squ',this.right.x,this.y+this.height,15);
     this.id = diagram.element.size ;
 }
 
@@ -14,6 +14,8 @@ Object.defineProperties(element.prototype,{
         set: function(input){ 
             this.graphic.x = input;
             this.graphic_C.x = this.rightBot.x ;
+            this.node.left.update();
+            this.node.right.update();
         }
     },
     y:{
@@ -21,6 +23,8 @@ Object.defineProperties(element.prototype,{
         set : function(input){
             this.graphic.y = input;
             this.graphic_C.y = this.rightBot.y
+            this.node.left.update();
+            this.node.right.update();
         }
     },
     rightBot:{
@@ -32,6 +36,8 @@ Object.defineProperties(element.prototype,{
         set:function(input){
             this.graphic.width = input > 50 ? input : 50;
             this.graphic_C.x = this.rightBot.x;
+            this.node.left.update();
+            this.node.right.update();
 
         },
         get : function(){
@@ -46,6 +52,8 @@ Object.defineProperties(element.prototype,{
         set :function (input) {
             this.graphic.height = input > 50 ? input : 50;
             this.graphic_C.y = this.rightBot.y;
+            this.node.left.update();
+            this.node.right.update();
 
         }
     },
@@ -73,15 +81,6 @@ Object.defineProperties(element.prototype,{
 });
 
 
-
-
-
-// element.prototype.OnElementDetect = function () {
-//     d.beginPath();
-//     d.rect(this.x, this.y, this.width, this.height);
-//     d.closePath();
-
-// }
 
 element.prototype.isOnControl = function (e) {
     if (this.node.left.isOnNode(e)) { return this.node.left; }

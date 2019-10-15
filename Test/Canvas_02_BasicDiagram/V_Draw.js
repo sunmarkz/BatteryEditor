@@ -48,17 +48,57 @@ function Draw(s, type = null) {
 
     }
     function d_text(s) {
-        if (s.Text) {
-            // if content text isnt null
-            var margin = 5;
-            CanvStyle.Text();
-            var Widthminmum = d.measureText(s.Text).width;
-            if (Widthminmum + margin * 2 > s.width) {
-                s.width = Widthminmum + margin * 2;
-                Draw(s);
-                return;
+        var textContent = Handler_text(s.Text);
+        if (textContent) {
+            let singleLetterHeight = 30;
+            let textArea_Width = s.width -  margin * 2 ;
+            let textArea_Height = (s.height - margin * 2)  / singleLetterHeight;
+            let textArea_x = s.x+margin;
+            let textArea_y = s.y+margin;
+            var renderText = textContent;
+            var LetterWidthMaximum= null;
+            for (let i = 0; i < renderText.length; i++) {
+                if (i > textArea_Height-1) { 
+                    // if out of height, break;
+                    // and renderText == where it is.
+                    renderText = renderText.slice(0,i);
+                    break;
+                } 
+
+                let j = renderText[i];
+                if(d.measureText(j).width>textArea_Width){
+                    // out of width; start splite;
+
+                    if(LetterWidthMaximum==null){
+                        //initial maximum letter count
+                        let LetterTest = j;
+                        for (let k = LetterTest.length-1; k >1 ; k--) {
+                            let texts = LetterTest.slice(0,k);
+                            if (d.measureText(texts).width <= textArea_Width){
+                                LetterWidthMaximum = k;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    renderText.splice(i, 1, renderText[i].slice(0, LetterWidthMaximum), renderText[i].slice(LetterWidthMaximum));
+                }
+
+                CanvStyle.Text();
+                CanvDraw.t(renderText[i], textArea_x, textArea_y +singleLetterHeight *i, textArea_Width);
+                                
             }
-            d.fillText(s.Text, s.x + margin, s.y + 30 + margin, s.width - (margin * 2));
+
+        //     // if content text isnt null
+        //     var margin = 5;
+        //     CanvStyle.Text();
+        //     var Widthminmum = d.measureText(text.Text).width;
+        //     if (Widthminmum + margin * 2 > text.width) {
+        //         text.width = Widthminmum + margin * 2;
+        //         Draw(text);
+        //         return;
+        //     }
+        //     d.fillText(text.Text, text.x + margin, text.y + 30 + margin, text.width - (margin * 2));
 
         }
     }
@@ -118,5 +158,3 @@ function drawCtrl(s) {
         return;
     }
 }
-
-

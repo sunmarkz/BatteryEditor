@@ -1,4 +1,4 @@
-
+const margin = 5;
 var CanvDraw = {
     rect: function (x , y , w , h ){
         d.beginPath();
@@ -10,8 +10,8 @@ var CanvDraw = {
         d.arc(x, y, r, 0, Math.PI * 2);
         d.closePath();
     },
-    t:function(x,y,width,t){
-        var margin = 5;
+    t:function(t,x,y,width){
+        
         d.fillText(t, x + margin, y + 30 + margin, width - (margin * 2));
     }
 }
