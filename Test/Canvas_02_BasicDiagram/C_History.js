@@ -7,12 +7,14 @@ function history() {
     let recordStep_ = 50;
 
 };
+
 /**
+ * Push to history what did for operation 
  * @param {Object || Array} OperatedElement - operated element / elements
  * @param {String} act - type of operation
  * @param {*} action - move : {x:x,y:y} | remove : none | linkTo : node 
  */
-history.prototype.push = function (operatedElement, act = 'move' | 'remove' | 'linkTo',action) {
+history.prototype.record = function (operatedElement, act = 'move' | 'remove' | 'linkTo',action) {
 
     // if operation_ full shift first one;
     this.operation_.length >= this.recordStep_ && this.operation_.shift();
@@ -20,6 +22,7 @@ history.prototype.push = function (operatedElement, act = 'move' | 'remove' | 'l
 
 
 }
+
 history.prototytpe.redo= function (){
     if(this.operation_.length == 0){
         return;
@@ -46,3 +49,5 @@ history.prototytpe.redo= function (){
     }
     
 }
+var a = new Array;
+a.push
