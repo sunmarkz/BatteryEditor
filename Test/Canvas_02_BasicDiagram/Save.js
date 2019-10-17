@@ -29,8 +29,6 @@ var result = {
 }
     var string = JSON.stringify(result);
   return(string);
-  
-    
 }
 
 function Load_(input){

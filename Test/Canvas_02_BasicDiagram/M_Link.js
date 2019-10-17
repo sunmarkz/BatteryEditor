@@ -3,6 +3,7 @@ function Link(from, to) {
     from instanceof Node && (this.from = from.bundle);
     to instanceof LinkBundle && (this.to = to);
     to instanceof Node && (this.to = to.bundle);
+    this.parentElement = this.from.parentElement;
     this.type = 'pl'
     this.graphic_C = new Graphic(this, 'c', this.center.x, this.center.y, 5);
 }
@@ -60,7 +61,7 @@ Link.prototype.del = function () {
     this.from.linkTo.delete(this);
     this.to.linked.delete(this);
     diagram.del(this);
-
+    
 }
 
 

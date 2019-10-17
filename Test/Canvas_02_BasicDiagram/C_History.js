@@ -9,45 +9,48 @@ function history() {
 };
 
 /**
- * Push to history what did for operation 
- * @param {Object || Array} OperatedElement - operated element / elements
+ * Push to history what did for operation
+ * @param {Array} OperatedElement - operated elements
  * @param {String} act - type of operation
- * @param {*} action - move : {x:x,y:y} | remove : none | linkTo : node 
+ * @param {Array} recordInfo - move : elements:[{x:x,y:y}...] | remove : null | linkTo : null
+ * @ return
  */
-history.prototype.record = function (operatedElement, act = 'move' | 'remove' | 'linkTo',action) {
+
+history.prototype.record = function (operatedElement, act = 'move' | 'remove' | 'linkTo', recordInfo=null) {
+
 
     // if operation_ full shift first one;
     this.operation_.length >= this.recordStep_ && this.operation_.shift();
-    this.operation_.push({element:operatedElement, action : act});
-
-
+    this.operation_.push({ element: operatedElement, action: act ,recordInfo});
 }
 
-history.prototytpe.redo= function (){
-    if(this.operation_.length == 0){
+
+history.redo = function () {
+    if (this.operation_.length == 0) {
         return;
-    }else{
-        let redoOperation_ = this.operation_.pop();
-        switch (action) {
-            case 'move':
-                if (redoOperation_ instanceof Array){
-                    redoOperation_.forEach(i => {
-                        i.x
-                    });
-                }
-                    break;
-            case 'remove':
-
-                break;
-            case 'linkTo':
-
-                break;
-
-            default:
-                break;
-        }
     }
-    
+
+    let redoOperation_ = this.operation_.pop();
+    switch (redoOperation_.action) {
+        case 'move':
+            for (let i = 0; i < redoOperation_.element.length; i++) {
+                let element_ = redoOperation_.element[i];
+                let record_ = redoOperation_.recordInfo[i];
+                element_.x = record_.x;
+                element_.y = record_.y; 
+            }
+            break;
+        case 'remove':
+            element
+            break;
+        case 'linkTo':
+
+            break;
+
+        default:
+            break;
+    }
+
+
 }
-var a = new Array;
-a.push
+

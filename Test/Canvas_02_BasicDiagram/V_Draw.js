@@ -36,9 +36,6 @@ function Draw(s, type = null) {
         canv.lineTo(target.x, target.y);
         CanvStyle.Link();
     }
-    function d_links(s) {
-            Draw(s);
-    }
     function d_node(s) {
         
         s.graphic.draw();
@@ -109,6 +106,7 @@ function drawCtrl(s) {
     s instanceof element && dc_element(s);
     s instanceof LinkBundle && dc_bundle(s);
     s instanceof Link && dc_link(s);
+    s instanceof Node && dc_bundle(s.bundle);
 
 
     function dc_element(s) {

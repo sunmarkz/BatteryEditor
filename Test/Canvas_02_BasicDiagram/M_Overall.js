@@ -54,6 +54,13 @@ var Overall = {
         if (diagram.elementSelection.size == 0) {
             return ('Noselection');
         }
+    },
+    Del : function(input){
+        if(input instanceof element){
+            diagram.del(input);
+            _History.record()
+        }
     }
 
-}
+};
+

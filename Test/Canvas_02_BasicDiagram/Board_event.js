@@ -37,9 +37,18 @@ cv.clear = function () {
 
 cv.redraw = function () {
     this.clear();
+
+    // draw all links, make links on the bottom;
     diagram.link.forEach(j=>{
         Draw(j);
     });
+
+    //draw all seleted elements link control;
+    diagram.elementSelection.forEach(k=>{
+        drawCtrl(k.node.left);
+        drawCtrl(k.node.right);
+    });
+
     this.list.forEach(function (i) {
         Draw(i);
     })
