@@ -54,3 +54,14 @@ history.redo = function () {
 
 }
 
+function transition (operateElement,status,action){
+    // HISTORY of move, size adjustment.
+    //TODO : this will be a instance, once element doEvent, generate this.
+    // this will store in history as a list
+    //Once undo, index will call this.redo 
+    // action store move/remove/linkTo..
+}
+transition.prototype.redo = function(){
+
+}
+
