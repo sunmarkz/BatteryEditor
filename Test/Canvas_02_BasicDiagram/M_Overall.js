@@ -6,7 +6,7 @@ var Overall = {
         var on = null;
         for (let i = 0; i < list.length; i++) {
             var j=list[i];
-            if (j instanceof Link == true) {
+            if (j instanceof eLink == true) {
                 if (j.graphic_C.isOn(p)) {
                     on = j;
                     break;
@@ -28,9 +28,9 @@ var Overall = {
     operateList: function () {
 
         var result = new Set();
-        if (diagram.elementSelection.size != 0) {
+        if (_ResourceManager.elementSelection.size != 0) {
 
-            diagram.elementSelection.forEach(i => {
+            _ResourceManager.elementSelection.forEach(i => {
                 result.add(i.graphic_C);
                 result.add(i.node.right);
                 result.add(i.node.left);
@@ -40,24 +40,24 @@ var Overall = {
                 List.merge(result, i.node.right.bundle.linked);
             });
 
-            List.merge(result, diagram.element)
+            List.merge(result, _ResourceManager.elements)
 
             return (result);
         } else {
-            return diagram.element;
+            return _ResourceManager.elements;
         }
     },
     Status: function () {
-        if (diagram.elementSelection.size != 0) {
+        if (_ResourceManager.elementSelection.size != 0) {
             return ("onSelection");
         }
-        if (diagram.elementSelection.size == 0) {
+        if (_ResourceManager.elementSelection.size == 0) {
             return ('Noselection');
         }
     },
     Del : function(input){
-        if(input instanceof element){
-            diagram.del(input);
+        if(input instanceof eBattery){
+            _ResourceManager.del(input);
             _History.record()
         }
     }

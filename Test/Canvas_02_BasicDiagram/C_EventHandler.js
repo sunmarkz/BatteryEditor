@@ -10,7 +10,7 @@ function EventHandler(CANV) {
         move = p;
         onElement = Overall.isOn(p);
         CANV.onmousemove = function (x) {
-            var move = x;
+             move = x;
             dragging(p, onElement);
         };
     }
@@ -24,31 +24,30 @@ function EventHandler(CANV) {
         !move && click(onElement);
     }
     function click(onElement) {
-
-        (onElement instanceof element) && doEvent.singleSelect(onElement);
-        (onElement instanceof Link) && doEvent.remove(onElement);
-        (onElement == null) && diagram.elementSelection.size != 0 && doEvent.resetSelect();
+        (onElement instanceof eBattery) && doEvent.singleSelect(onElement);
+        (onElement instanceof eLink) && doEvent.remove(onElement);
+        (onElement == null) && doEvent.resetSelect();
         Board.redraw();
     }
     function dragging(k, onElement) {
-        (onElement instanceof Node) && doEvent.create(onElement);
+        (onElement instanceof eNode) && doEvent.create(onElement);
         (onElement == null) && doEvent.multiplySelect(k);
-        if (onElement instanceof element) {
+        if (onElement instanceof eBattery) {
             if (onElement.selected == false) {
                 doEvent.singleSelect(onElement);
             }
             doEvent.move(onElement, k);
         }
-        (onElement instanceof Graphic && onElement.parent instanceof element) && doEvent.size(onElement, k);
+        (onElement instanceof Graphic && onElement.parent instanceof eBattery) && doEvent.size(onElement, k);
 
     }
     function dblclick(e) {
         p = point(e);
 
         var onElement = Overall.isOn(p);
-        (onElement == null) && doEvent.create(new element(p.x - 25, p.y - 25));
-        onElement instanceof Node && doEvent.remove(onElement);
-        onElement instanceof element && doEvent.textEdit(onElement);
+        (onElement == null) && doEvent.create(new eBattery(p.x - 25, p.y - 25));
+        onElement instanceof eNode && doEvent.remove(onElement);
+        onElement instanceof eBattery && doEvent.textEdit(onElement);
         Board.redraw();
         return;
     }

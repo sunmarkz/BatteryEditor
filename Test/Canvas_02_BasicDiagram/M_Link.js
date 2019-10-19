@@ -1,17 +1,17 @@
-function Link(from, to) {
-    from instanceof LinkBundle && (this.from = from);
-    from instanceof Node && (this.from = from.bundle);
-    to instanceof LinkBundle && (this.to = to);
-    to instanceof Node && (this.to = to.bundle);
+function eLink(from, to) {
+    from instanceof eLinkBundle && (this.from = from);
+    from instanceof eNode && (this.from = from.bundle);
+    to instanceof eLinkBundle && (this.to = to);
+    to instanceof eNode && (this.to = to.bundle);
     this.parentElement = this.from.parentElement;
     this.type = 'pl'
     this.graphic_C = new Graphic(this, 'c', this.center.x, this.center.y, 5);
 }
-Link.prototype.update = function () {
+eLink.prototype.update = function () {
     this.graphic_C.x = this.center.x;
     this.graphic_C.y = this.center.y;
 }
-Object.defineProperties(Link.prototype, {
+Object.defineProperties(eLink.prototype, {
     positionFrom: {
         get: function () {
             return (point(this.from.parentNode.graphic.x, this.from.parentNode.graphic.y));
@@ -52,21 +52,16 @@ Object.defineProperties(Link.prototype, {
 
 
 
-Link.prototype.reverse = function () {
+eLink.prototype.reverse = function () {
     var temp = this.from;
     this.from = this.to;
     this.to = temp;
 }
-Link.prototype.del = function () {
-    this.from.linkTo.delete(this);
-    this.to.linked.delete(this);
-    diagram.del(this);
-    
-}
 
 
 
-function LinkBundle(parentNode) {
+
+function eLinkBundle(parentNode) {
     this.linkTo = new Set();
     this.linked = new Set();
     this.parentNode = parentNode;
@@ -74,7 +69,7 @@ function LinkBundle(parentNode) {
 }
 
 
-Object.defineProperties(LinkBundle.prototype, {
+Object.defineProperties(eLinkBundle.prototype, {
     position: {
         get: function () {
             return this.parentNode.position;
@@ -106,23 +101,13 @@ Object.defineProperties(LinkBundle.prototype, {
 
 })
 
-LinkBundle.prototype.push = function (link) {
-    var input = link;
-    link instanceof Node && (input = link.bundle);
-    // if input is Node transfer to its bundle
-    var l = new Link(this, input);
-    this.linkTo.add(l);
-    input.linked.add(l);
-    diagram.push(l);
-
-}
 
 
-LinkBundle.prototype.clear = function () {
+eLinkBundle.prototype.clear = function () {
     this.linked.forEach((j) => {
-        j.del();
+        doEvent.remove(j)
     });
     this.linkTo.forEach((i) => {
-        i.del();
+        doEvent.remove(i)
     });
 }

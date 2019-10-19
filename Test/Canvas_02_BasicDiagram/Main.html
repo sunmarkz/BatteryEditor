@@ -20,7 +20,7 @@
 <script src="./V_CanvStyle.js"></script>
 <script src="./V_CanvDraw.js"></script>
 <script src="./Graphic_Cal.js"></script>
-<script src="./M_Element.js"></script>
+<script src="./M_Battery.js"></script>
 <script src="./Handler_text.js"></script>
 <script src='./M_Node.js'></script>
 <script src="./M_Layer.js"></script>
@@ -67,14 +67,15 @@
 
     //======================================================================================
 
-    diagram = new Layer;
-    diagram.push(new element(10, 30, 30, 100, '0'));
-    diagram.push(new element(50, 50, 100, 100, '1'));
-    diagram.push(new element(200, 300, 50, 50, '2'));
-    diagram.push(new element(500, 600, 200, 200, '3aaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'));
+    _ResourceManager = new ResourceManager;
+    var a  =  new eBattery(1,2); 
+    _ResourceManager.push(new eBattery(10, 30, 30, 100, '0'));
+    _ResourceManager.push(new eBattery(50, 50, 100, 100, '1'));
+    _ResourceManager.push(new eBattery(200, 300, 50, 50, '2'));
+    _ResourceManager.push(new eBattery(500, 600, 200, 200, '3aaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'));
 
     var selectBox = null;
-    var Board = new Canv(d, diagram);
+    var Board = new Canv(d, _ResourceManager);
     Board.redraw();
     var _EventListener = new EventHandler(Canvas);
     var _History = new history();

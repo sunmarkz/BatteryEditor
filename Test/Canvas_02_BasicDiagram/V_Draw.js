@@ -3,11 +3,11 @@ canv = Canvas.getContext('2d');
 
 function Draw(s, type = null) {
     var input = s;
-    input instanceof Layer && Draw(input.element);
-    input instanceof element && d_ele(input);
-    input instanceof Node && d_node(input);
-    input instanceof LinkBundle && d_bundleLink(input);
-    input instanceof Link && d_link(input);
+    input instanceof ResourceManager && Draw(input.eBattery);
+    input instanceof eBattery && d_ele(input);
+    input instanceof eNode && d_node(input);
+    input instanceof eLinkBundle && d_bundleLink(input);
+    input instanceof eLink && d_link(input);
 
     function d_ele(el) {
         el.graphic.draw();  
@@ -103,13 +103,13 @@ function Draw(s, type = null) {
 }
 
 function drawCtrl(s) {
-    s instanceof element && dc_element(s);
-    s instanceof LinkBundle && dc_bundle(s);
-    s instanceof Link && dc_link(s);
-    s instanceof Node && dc_bundle(s.bundle);
+    s instanceof eBattery && dc_eBattery(s);
+    s instanceof eLinkBundle && dc_bundle(s);
+    s instanceof eLink && dc_link(s);
+    s instanceof eNode && dc_bundle(s.bundle);
 
 
-    function dc_element(s) {
+    function dc_eBattery(s) {
 
         s.graphic_C.draw();
         CanvStyle.CtrlDot();

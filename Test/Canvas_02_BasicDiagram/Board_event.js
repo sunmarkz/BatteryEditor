@@ -1,18 +1,17 @@
 function Canv(canvas, contentList) {
     this.onDrag = false;
     this.Board = canvas;
-    this.list = contentList.element;
+    this.list = contentList.elements;
     this.onCreate = false;
     this.onSelection = false;
     this.onControl = null;
-    this.magnetDist = 30;
     this.ConnectionNodeSize = 8;
 }
 var cv = Canv.prototype;
 cv.magnetPoint = function (e) {
+    const magnetDist = 30;
     p = point(e);
-    var result = { position: { x: p.x, y: p.y }, element: null }
-    var magnetDist = this.magnetDist
+    var result = { position:p, element: null }
     this.list.forEach(function (i) {
         if (!i.selected) {
             if (Di_lessThan(i.node.left.position, result.position, magnetDist)) {
@@ -39,12 +38,12 @@ cv.redraw = function () {
     this.clear();
 
     // draw all links, make links on the bottom;
-    diagram.link.forEach(j=>{
+    _ResourceManager.link.forEach(j=>{
         Draw(j);
     });
 
     //draw all seleted elements link control;
-    diagram.elementSelection.forEach(k=>{
+    _ResourceManager.elementSelection.forEach(k=>{
         drawCtrl(k.node.left);
         drawCtrl(k.node.right);
     });
@@ -60,7 +59,7 @@ cv.resetSelect = function () {
         i.unselect();
         // reset onControl statement
     })
-    diagram.elementSelection = [];
+    _ResourceManager.elementSelection = [];
 
 }
 cv.selectList = function () {
@@ -88,7 +87,7 @@ cv.isOnElement = function (e) {
 }
 cv.isOnControl = function (e) {
     var result;
-    var list = diagram.elementSelection;
+    var list = _ResourceManager.elementSelection;
     list.forEach(
         function (i) {
             result=i.isOnControl(e);

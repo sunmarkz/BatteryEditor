@@ -1,68 +1,62 @@
-function Save_(){
-    var overall = [];
-    var elements = [];
+/**
+ * Save function will return string contain : 
+ * {Barttery: [batterys props], link : [links props]}
+ */
+function Save_() {
+    var exportBatteryProps = [];
     var links = [];
-    diagram.element.forEach(
-        i=>{
-            var element = {
-                'id' : i.id,
-                'x' : i.x,
-                'y': i.y,
-                'width':i.width,
-                'height': i.height,
-                'text': i.text
-            };
-            elements.push(element);
+    _ResourceManager.elements.forEach(
+        i => {
+            exportBatteryProps.push(getProperties(i));
         });
-    diagram.link.forEach(j=>{
-        var link = {
-            'fromElement': j.from.parentElement.id,
-            'fromNode': j.from.parentNode.type,
-            'toElement': j.to.parentElement.id,
-            'toNode': j.to.parentNode.type
-        }
-        links.push(link);
+    _ResourceManager.link.forEach(j => {
+        links.push(getProperties(j));
     });
-var result = {
-    'element' : elements,
-    'link' : links
-}
+
+    var result = {
+        'Battery': exportBatteryProps,
+        'link': links
+    }
     var string = JSON.stringify(result);
-  return(string);
+    return (string);
 }
 
-function Load_(input){
-    var input = eval('('+input+')');
-    diagram = new Layer;
+/**
+ * function Load will convert JSON to batteries format. 
+ */
+function Load_(input) {
+    var input = eval('(' + input + ')');
+    _ResourceManager = new Layer;
 
-    input.element.forEach( i =>{
-        diagram.push(new element(i.x, i.y, i.width, i.height, i.text));
+    input.Battery.forEach(i => {
+        _ResourceManager.push(new eBattery(i.x, i.y, i.width, i.height, i.text));
     }
     );
     input.link.forEach(
-        j=>{
-            var from = j.fromNode == 'left' ? [...diagram.element][j.fromElement].node.left : [...diagram.element][j.fromElement].node.right 
-            var to = j.toNode == 'left' ? [...diagram.element][j.toElement].node.left : [...diagram.element][j.toElement].node.right 
+        j => {
+            var from = j.fromNode == 'left' ? [..._ResourceManager.elements][j.fromElement].node.left : [..._ResourceManager.elements][j.fromElement].node.right
+            var to = j.toNode == 'left' ? [..._ResourceManager.elements][j.toElement].node.left : [..._ResourceManager.elements][j.toElement].node.right
             from.push(to);
         }
     );
-    Board = new Canv(d, diagram);
+    Board = new Canv(d, _ResourceManager);
     Board.redraw();
     // eventListener = new EventHandler(Canvas);
 }
 
+// save and load button. import from internet
 var inputElement = document.getElementById("files");
 inputElement.addEventListener("change", handleFiles, false);
 function handleFiles() {
     var selectedFile = document.getElementById("files").files[0];//获取读取的File对象
     console.log(selectedFile);
-    
+
     var reader = new FileReader();//这里是核心！！！读取操作就是由它完成的。
     reader.readAsText(selectedFile);//读取文件的内容
     reader.onload = function () {
         console.log(this.result);
         Load_(this.result);
-        
+
     };
 }
 var button = document.getElementById("export");
@@ -70,5 +64,5 @@ button.addEventListener("click", saveHandler, false);
 function saveHandler() {
     let content = Save_();
     var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-    saveAs(blob, "diagram.json");
+    saveAs(blob, "_ResourceManager.json");
 }
