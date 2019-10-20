@@ -6,6 +6,7 @@ var doEvent = {
     create: function (input) {
         if (input instanceof eBattery == true) {
             _ResourceManager.push(input);
+            _History.record();            
             return;
         }
         if (input instanceof eNode == true) {
@@ -20,6 +21,8 @@ var doEvent = {
                 Canvas.onmouseup = null;
                 if (TempConnectElement) {
                     doEvent.create(new eLink(input, TempConnectElement));
+                    _History.record();
+                    
                     Board.redraw();
                 }
                 else {
@@ -28,10 +31,12 @@ var doEvent = {
             }
         }
 
-        if(input instanceof eLink){
+        if (input instanceof eLink) {
             input.from.linkTo.add(input);
             input.to.linked.add(input);
             _ResourceManager.push(input);
+            
+            return;
         }
     },
     remove: function (input) {
@@ -39,10 +44,15 @@ var doEvent = {
             input.from.linkTo.delete(input);
             input.to.linked.delete(input);
             _ResourceManager.del(input);
+            _History.record();
+            
+
             return;
         }
         if (input instanceof eNode) {
             this.remove(input.bundle);
+            
+
             return;
         }
         if (input instanceof eLinkBundle) {
@@ -52,6 +62,9 @@ var doEvent = {
             input.linkTo.forEach((i) => {
                 doEvent.remove(i)
             });
+            _History.record();
+            
+
             return;
         }
 
@@ -62,13 +75,17 @@ var doEvent = {
                 i.node.right.bundle.clear();
             });
             _ResourceManager.elementSelection.clear();
+            
+            _History.record();
             return;
         }
     },
-    size: function (input , e = null) {
+    size: function (input, e = null) {
         if (input.parent instanceof eBattery) {
             var last_e = e;
             Canvas.onmouseup = function () {
+                _History.record();
+                
                 Canvas.onmousemove = null;
             };
             Canvas.onmousemove = function (mousemove_e) {

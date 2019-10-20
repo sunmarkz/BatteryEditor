@@ -3,8 +3,9 @@
 */
 function history() {
     // initial history instance, Actually here is a singleton function just dont know how to fulfill yet.
-    let operation_ = [];
-    let recordStep_ = 50;
+    this.historyStack = [];
+    this.recordStep_ = 50;
+    this.index = 0;
 
 };
 
@@ -16,41 +17,40 @@ function history() {
  * @ return
  */
 
-history.prototype.record = function (operatedElement, act = 'move' | 'remove' | 'linkTo', recordInfo = null) {
-
-
+history.prototype.record = function () {
+    
+    if (this.index == this.recordStep_) {
+        this.index--;
+        this.historyStack.shift();
+    }
     // if operation_ full shift first one;
-    this.operation_.length >= this.recordStep_ && this.operation_.shift();
-    this.operation_.push({ element: operatedElement, action: act, recordInfo });
+    this.historyStack[this.index] = Save_();
+    this.historyStack.length = this.index+1;
+    this.index++;
+    console.log('record');
+    
+    return;
 }
 
 
-history.redo = function () {
-    if (this.operation_.length == 0) {
+history.prototype.undo = function () {
+    if (this.index == 1) {
         return;
     }
+    this.index--;
 
-    let redoOperation_ = this.operation_.pop();
-    switch (redoOperation_.action) {
-        case 'move':
-            for (let i = 0; i < redoOperation_.element.length; i++) {
-                let element_ = redoOperation_.element[i];
-                let record_ = redoOperation_.recordInfo[i];
-                element_.x = record_.x;
-                element_.y = record_.y;
-            }
-            break;
-        case 'remove':
-            eBattery
-            break;
-        case 'linkTo':
+    console.log('undo');
+    
+    Load_(this.historyStack[this.index-1]);
+    return;
 
-            break;
+}
 
-        default:
-            break;
-    }
-
+history.prototype.redo = function(){
+ if(this.index >= this.historyStack.length){
+     return;
+ }
+    Load_(this.historyStack[this.index++]);
 
 }
 
@@ -84,10 +84,10 @@ var getProperties = {
         });
     },
     _eNode: function (input) {
-        return;
+        return this._eLinkBundle(input);
     },
     _eLinkBundle: function (input) {
-
+        var linksInLinksBundle ={type :'eLinkBundle', from :[],to };
     },
     _eLink: function (s) {
         return ({
@@ -99,3 +99,22 @@ var getProperties = {
     }
 }
 
+var setProperties = {
+    do : function (input,type=null){
+
+    },
+    _eBattery :function (input){
+
+    },
+    _eLink : function(input){
+
+    },
+    _eLinkBundle : function(input){
+
+    },
+    _eNode: function(input){
+
+    }
+
+    
+}

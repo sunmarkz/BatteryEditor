@@ -9,8 +9,8 @@
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
-            "url": "C:\\Users\\sunmarkz\\Documents\\Server\\BatteryEditor\\Test\\Canvas_02_BasicDiagram\\Main.html",
-            "webRoot": "C:\\Users\\sunmarkz\\Documents\\Server\\BatteryEditor\\Test\\Canvas_02_BasicDiagram"
+            "url": "C:\\Users\\sunmarkz\\Documents\\Server\\BatteryEditor\\Test\\Canvas_03_BasicDiagram\\Main.html",
+            "webRoot": "C:\\Users\\sunmarkz\\Documents\\Server\\BatteryEditor\\Test\\Canvas_03_BasicDiagram"
         }
     ]
 }
