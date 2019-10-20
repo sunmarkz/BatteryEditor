@@ -84,11 +84,10 @@ var getProperties = {
         });
     },
     _eNode: function (input) {
-        return this._eLinkBundle(input);
+        return;
     },
     _eLinkBundle: function (input) {
-        var linksInLinksBundle ={type :'eLinkBundle', from :[],to };
-        input.
+
     },
     _eLink: function (s) {
         return ({
@@ -100,22 +99,3 @@ var getProperties = {
     }
 }
 
-var setProperties = {
-    do : function (input,type=null){
-
-    },
-    _eBattery :function (input){
-
-    },
-    _eLink : function(input){
-
-    },
-    _eLinkBundle : function(input){
-
-    },
-    _eNode: function(input){
-
-    }
-
-    
-}
