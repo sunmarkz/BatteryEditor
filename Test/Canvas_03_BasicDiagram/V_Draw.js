@@ -45,7 +45,7 @@ function Draw(s, type = null) {
 
     }
     function d_text(s) {
-        var textContent = Handler_text(s.Text);
+        var textContent = Handle_text.lineSeperator(s.Text);
         if (textContent) {
             let singleLetterHeight = 30;
             let textArea_Width = s.width -  margin * 2 ;
