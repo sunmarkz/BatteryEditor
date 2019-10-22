@@ -1,17 +1,99 @@
 
 const _tabText = ' '; // this is tab letter in textarea;
+const _startLocation = { x: 20, y: 50 };
+const _lineHeight = 10;
+const _lineWidth = 20;
+const _gapping = 20;
 
-function t_Node(s) {
+function t_Node(splitedString, lastNode = null) {
     //count how many tab have define which level is.
-    this.level = Handle_text.count(_tabText);
-    this.content = s.slice(_tabText.length*this.level);
-    this.parentIndex;
-    this.index;
-    this.x;
-    this.y;
+    this.level = Handle_text.FrontKeywordsCount(splitedString, _tabText);
+    this.content = Handle_text.FrontKeywordsFilter(splitedString, _tabText);
+    this.lastNode = lastNode;
+
+    this.width;
+    this.height = 20 + _gapping;
+
+    if (lastNode == null) {
+        //first item initialize
+
+        //this.level = 0;
+        this.indexofLevel = 0;
+        this.lastLevelLastItem = null;
+        this.indexofAll = 0;
+        this.x = _startLocation.x;
+        this.y = _startLocation.y;
+    } else {
+        
+        if (lastNode.level == this.level) {
+            // on same level 
+            this.indexofLevel = lastNode.indexofLevel + 1;
+            this.lastLevelLastItem = lastNode.lastLevelLastItem;
+            this.indexofAll = lastNode.indexofAll + 1;
+            this.groupHeight = lastNode.groupHeight + this.height;
+
+            lastNode.groupHeight = this.groupHeight;
+            lastNode.lastLevelLastItem.groupHeight += this.height; // last level item height ++;
+
+            if (this.width > lastNode.groupWidth) {
+                // get biggest width in group
+                this.groupWidth = this.width;
+                lastNode.groupWidth = this.width;
+            }
+
+
+            this.x = lastNode.x;
+            this.y = lastNode.y + lastNode.height;
+        } else {
+            //level change !
+            if (this.level < lastNode.level) {
+                //upper level
+                this.indexofLevel = 0;// first item in level
+                this.lastLevelLastItem = lastNode.lastLevelLastItem.lastLevelLastItem;
+                this.indexofAll = lastNode.indexofAll+1;
+                this.groupHeight = lastNode.groupHeight + this.height;
+                lastNode.groupHeight = this.groupHeight;
+
+                if (this.width > lastNode.groupWidth) {
+                    // get biggest width in group
+                    this.groupWidth = this.width;
+                    lastNode.groupWidth = this.width;
+                }
+
+                 
+
+                this.x = lastNode.lastLevelLastItem.x;//this level's last node;
+                this.y = lastNode.lastLevelLastItem.y + lastNode.lastLevelLastItem.height;
+                
+
+            } else {
+                // next level
+
+            }
+
+        }
+
+
+
+    }
+
+    this.indexofLevel;
+    this.lastLevelLastItem;
+    this.indexofAll;
     this.width;
     this.height;
+    this.groupWidth;
+    this.groupHeight;
+    this.x;
+    this.y;
 }
+Object.defineProperties(t_Node.prototype, {
+
+
+})
+function t_NodeInitialize()
+
+
 
 var Handle_text = {
     lineSeperator: function (input) {
@@ -28,6 +110,33 @@ var Handle_text = {
         return text;
     },
 
+    FrontKeywordsCount: function (sourceText, keyword) {
+        var _count = 0;
+        var _text = sourceText;
+
+        if (_text.indexOf(keyword) != 0) { return 0 }
+        for (let i = 0; i < _text.length; i++) {
+            if (_text.indexOf(keyword == 0)) {
+                _count++;
+                _text = _text.slice(keyword.length - 1);
+            } else {
+                break;
+            }
+        }
+        return _count;
+    },
+
+    FrontKeywordsFilter: function (sourceText, keyword) {
+        var _text = sourceText;
+        for (let i = 0; i < _text.length; i++) {
+            if (_text.indexOf(keyword == 0)) {
+                _text = _text.slice(keyword.length - 1);
+            } else {
+                break;
+            }
+        }
+        return _text;
+    },
 
     levelGenerator: function (input) {
 
@@ -37,20 +146,14 @@ var Handle_text = {
 
         //initialize container
         var _levels = [];// will contain each level
+        var outputNodes = [];
 
 
         //read items in line Seperated Text;
         for (let i = 0; i < _lineSepertedText.length; i++) {
 
             var _tNode = new t_Node(_lineSepertedText[i])
-            
-            //initial level array in _levels
-            if (!_levels[_tNode.level]) _levels[_tNode.level] = [];
-
-            //initial other tnode attrs
-            _tNode.index = _levels[_tNode.level].length; // index start from 0;
-            _tNode.parentIndex = _levels[_tNode.level-1].length; //last level's last index
-            _levels[_tNode.level].push(_tNode); //push to level array.
+            _tNode.LastLevelLastItem;
 
         }
 
