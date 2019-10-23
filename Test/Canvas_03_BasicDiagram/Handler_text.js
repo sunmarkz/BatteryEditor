@@ -68,6 +68,13 @@ function t_Node(splitedString, lastNode = null) {
 
             } else {
                 // next level
+                this.indexofLevel = 0;
+                this.lastLevelLastItem = lastNode;
+                this.indexofAll = lastNode.indexofAll+1;
+                this.groupWidth = this.width;
+                this.groupHeight = this.height;
+                this.x = lastNode.x+lastNode.groupWidth;
+                this.y = 
 
             }
 
