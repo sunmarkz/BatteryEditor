@@ -9,10 +9,11 @@
 </style>
 
 <body style="margin:0;padding:0">
+        <textarea id = 'sss' position = 'absolute' ></textarea>
     <div id='bar'>
         <input type="file" id="files" />
         <input type="button" id="export" value="保存" />
-
+        
     </div>
     <canvas id="MyCanvas" stroke='black'>
     </canvas>
@@ -69,17 +70,17 @@
 
     _ResourceManager = new ResourceManager;
     var a  =  new eBattery(1,2); 
-    _ResourceManager.push(new eBattery(10, 30, 30, 100, '0'));
-    _ResourceManager.push(new eBattery(50, 50, 100, 100, '1'));
-    _ResourceManager.push(new eBattery(200, 300, 50, 50, '2'));
-    _ResourceManager.push(new eBattery(500, 600, 200, 200, '3aaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'));
+    // _ResourceManager.push(new eBattery(10, 30, 30, 100, '0'));
+    // _ResourceManager.push(new eBattery(50, 50, 100, 100, '1'));
+    // _ResourceManager.push(new eBattery(200, 300, 50, 50, '2'));
+    // _ResourceManager.push(new eBattery(500, 600, 200, 200, '3aaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'));
 
     var selectBox = null;
     var Board = new Canv(d, _ResourceManager);
     Board.redraw();
     var _History = new history();
     _History.record();
-    var _EventListener = new EventHandler(Canvas);
+    // var _EventListener = new EventHandler(Canvas);
 
 </script>
 

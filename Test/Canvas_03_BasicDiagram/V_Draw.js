@@ -44,50 +44,17 @@ function Draw(s, type = null) {
     function dashLink(s) {
 
     }
+
     function d_text(s) {
+
         var textContent = Handle_text.lineSeperator(s.Text);
-        if (textContent) {
-            let singleLetterHeight = 30;
-            let textArea_Width = s.width -  margin * 2 ;
-            let textArea_Height = (s.height - margin * 2)  / singleLetterHeight;
-            let textArea_x = s.x+margin;
-            let textArea_y = s.y+margin;
-            var renderText = textContent;
-            var LetterWidthMaximum= null;
-            for (let i = 0; i < renderText.length; i++) {
-                if (i > textArea_Height-1) { 
-                    // if out of height, break;
-                    // and renderText == where it is.
-                    renderText = renderText.slice(0,i);
-                    break;
-                } 
-
-                let j = renderText[i];
-                if(d.measureText(j).width>textArea_Width){
-                    // out of width; start splite;
-
-                    if(LetterWidthMaximum==null){
-                        //initial maximum letter count
-                        let LetterTest = j;
-                        for (let k = LetterTest.length-1; k >1 ; k--) {
-                            let texts = LetterTest.slice(0,k);
-                            if (d.measureText(texts).width <= textArea_Width){
-                                LetterWidthMaximum = k;
-                                break;
-                            }
-                        }
-                    }
-                    
-                    renderText.splice(i, 1, renderText[i].slice(0, LetterWidthMaximum), renderText[i].slice(LetterWidthMaximum));
-                }
-
+        textContent = Handle_text.TextInGraphic(textContent,s.graphic);
+        for (let i = 0; i < textContent.length; i++) {
                 CanvStyle.Text();
-                CanvDraw.t(renderText[i], textArea_x, textArea_y +singleLetterHeight *i, textArea_Width);
-                                
-            }
-
-
+            CanvDraw.t(textContent[i], s.x + margin, s.y + + margin+singleLetterHeight * (i + 1), s.width);
         }
+        
+
     }
     function d_bundleLink(s) {
         var s = s.linkTo;

@@ -1,18 +1,26 @@
 
 const _tabText = ' '; // this is tab letter in textarea;
-const _startLocation = { x: 20, y: 50 };
+const _startLocation = { x: 50, y: 50 };
 const _lineHeight = 10;
 const _lineWidth = 20;
 const _gapping = 20;
 
+
 function t_Node(splitedString, lastNode = null) {
     //count how many tab have define which level is.
     this.level = Handle_text.FrontKeywordsCount(splitedString, _tabText);
-    this.content = Handle_text.FrontKeywordsFilter(splitedString, _tabText);
-    this.lastNode = lastNode;
+    // this.content = Handle_text.FrontKeywordsFilter(splitedString, _tabText);
+    this.content = splitedString;
 
-    this.width;
-    this.height = 20 + _gapping;
+    
+    // TODO : render text fulfill multiply line text
+    // this.renderText = Handle_text.RenderTextInGraphic;
+
+    this.lastNode = lastNode;
+    // CanvStyle.Text();
+
+    this.width = d.measureText(splitedString).width;
+    this.height = singleLetterHeight;
 
     if (lastNode == null) {
         //first item initialize
@@ -23,6 +31,9 @@ function t_Node(splitedString, lastNode = null) {
         this.indexofAll = 0;
         this.x = _startLocation.x;
         this.y = _startLocation.y;
+        this.groupHeight = 0;
+        this.groupWidth = 0;
+
     } else {
         
         if (lastNode.level == this.level) {
@@ -33,12 +44,18 @@ function t_Node(splitedString, lastNode = null) {
             this.groupHeight = lastNode.groupHeight + this.height;
 
             lastNode.groupHeight = this.groupHeight;
-            lastNode.lastLevelLastItem.groupHeight += this.height; // last level item height ++;
+            // last level item height ++;
+
+            if(lastNode.lastLevelLastItem!=null){
+                lastNode.lastLevelLastItem.groupHeight = this.height + lastNode.lastLevelLastItem.groupHeight ; }
+
 
             if (this.width > lastNode.groupWidth) {
                 // get biggest width in group
                 this.groupWidth = this.width;
                 lastNode.groupWidth = this.width;
+            }else{
+                this.groupWidth = lastNode.groupWidth;
             }
 
 
@@ -58,6 +75,8 @@ function t_Node(splitedString, lastNode = null) {
                     // get biggest width in group
                     this.groupWidth = this.width;
                     lastNode.groupWidth = this.width;
+                }else{
+                    this.groupWidth = lastNode.groupWidth;     
                 }
 
                  
@@ -66,7 +85,7 @@ function t_Node(splitedString, lastNode = null) {
                 this.y = lastNode.lastLevelLastItem.y + lastNode.lastLevelLastItem.height;
                 
 
-            } else {
+            } else{
                 // next level
                 this.indexofLevel = 0;
                 this.lastLevelLastItem = lastNode;
@@ -74,31 +93,27 @@ function t_Node(splitedString, lastNode = null) {
                 this.groupWidth = this.width;
                 this.groupHeight = this.height;
                 this.x = lastNode.x+lastNode.groupWidth;
-                this.y = 
+                this.y = lastNode.y+ (this.groupHeight/2);
 
             }
-
         }
-
-
-
     }
-
-    this.indexofLevel;
-    this.lastLevelLastItem;
-    this.indexofAll;
-    this.width;
-    this.height;
-    this.groupWidth;
-    this.groupHeight;
-    this.x;
-    this.y;
+    this.graphic = new Graphic('rect',this.x,this.y,this.width,this.height);
 }
+t_Node.prototype.draw = function(){
+    CanvStyle.Text();
+    
+    CanvDraw.t(this.content,this.x,this.y,this.width);
+    this.graphic.draw();
+
+
+}
+
 Object.defineProperties(t_Node.prototype, {
 
 
 })
-function t_NodeInitialize()
+
 
 
 
@@ -110,7 +125,7 @@ var Handle_text = {
             return null;
         }
 
-        if (input instanceof String != true) throw ('lineSeperator handler error : ', input);
+        // if (input instanceof String != true) throw ('lineSeperator handler error : ', input);
 
         var text = new String(input);
         text = text.split('\n');
@@ -152,51 +167,107 @@ var Handle_text = {
         var _lineSepertedText = input instanceof Array == true ? input : this.lineSeperator(input);
 
         //initialize container
-        var _levels = [];// will contain each level
-        var outputNodes = [];
+        var outputNodes = [null];
 
 
         //read items in line Seperated Text;
         for (let i = 0; i < _lineSepertedText.length; i++) {
 
-            var _tNode = new t_Node(_lineSepertedText[i])
-            _tNode.LastLevelLastItem;
+            outputNodes.push(new t_Node(_lineSepertedText[i],outputNodes[outputNodes.length-1]));
 
         }
 
-
+        return outputNodes;
         //initialize Node;
 
+    },
+
+    TextInGraphic: function (textContent,graphic){
+        if (graphic.type != "rect"){
+            throw('Not support this graphic type :',graphic.type);
+        }
+        var s = graphic;
+
+        if (textContent) {
+
+            
+            let textArea_Width = s.width - (margin * 2);
+            let textArea_Height = (s.height - (margin * 2)) / singleLetterHeight;
+            var renderText = textContent;
+            var LetterWidthMaximum = null;
+
+
+            for (let i = 0; i < renderText.length; i++) {
+                if (i > textArea_Height - 1) {
+                    // if out of height, break;
+                    // and renderText == where it is.
+                    renderText = renderText.slice(0, i);
+                    break;
+                }
+
+                let j = renderText[i];
+                if (d.measureText(j).width > textArea_Width) {
+                    // out of width; start splite;
+
+                    if (LetterWidthMaximum == null) {
+                        //initial maximum letter count
+                        let LetterTest = j;
+                        for (let k = LetterTest.length - 1; k > 1; k--) {
+                            let texts = LetterTest.slice(0, k);
+                            if (d.measureText(texts).width < textArea_Width) {
+                                LetterWidthMaximum = k;
+                                break;
+                            }
+                        }
+                    }
+
+                    renderText.splice(i, 1, renderText[i].slice(0, LetterWidthMaximum), renderText[i].slice(LetterWidthMaximum));
+                }
+
+
+            }
+
+            return renderText;
+        }
+    },
+    RenderTextInGraphic:function(HandledText){
+
     }
+
 
 
 }
 
 
+document.getElementById('sss').onkeypress = function () {
+    Text2Diagram();
+    
+    
+}
 
-
-function Text2Diagram(s) {
+function Text2Diagram() {
+    var s = document.getElementById('sss').value;
     //TODO: add pure text to diagram unit.
     //Handle_text split lines.
     //will return an array contain [abc, cde,  efg,]
-    var s = Handle_text.lineSeperator(s);
+    s = Handle_text.lineSeperator(s);
 
     //Calculate level between each item.
     //seperate by count space symbol
     //will generate[node1,node2,node3,node4];
     //node Structure:
     //Level:parentNode / id : applyID / Sub-order : order in level;
+
     s = Handle_text.levelGenerator(s);
-
-    // Handle location by level 
-
-    // Generate Link
-
-    //Convert to diagram format
-
-    //Load_()
+    s.forEach(i => {
+        if(i!=null){
+            i.draw();
+        }
+        
+    });  
 
 
 }
+
 
 
