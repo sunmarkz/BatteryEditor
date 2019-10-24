@@ -10,7 +10,6 @@ function t_Node(splitedString, lastNode = null) {
 
     //count how many tab have define which level is.
     this.level = Handle_text.FrontKeywordsCount(splitedString, _tabText);
-    console.log(this.level );
     
     // this.content = Handle_text.FrontKeywordsFilter(splitedString, _tabText);
     this.content = splitedString;
@@ -23,7 +22,7 @@ function t_Node(splitedString, lastNode = null) {
     // CanvStyle.Text();
 
     this.width = d.measureText(splitedString).width;
-    this.height = singleLetterHeight+_gapping;
+    this.height = singleLetterHeight;
 
     if (lastNode == null) {
         //first item initialize
@@ -36,7 +35,7 @@ function t_Node(splitedString, lastNode = null) {
         this.y = _startLocation.y;
 
         //group = this node's group;
-        this.group = new Graphic(this,'rect',this.x,this.y,this.width,this.height);
+        this.group = new Graphic(this, 'rect', this.x, this.y + _gapping,this.width+_gapping,this.height);
 
     } else {
 
@@ -47,7 +46,7 @@ function t_Node(splitedString, lastNode = null) {
             this.indexofAll = lastNode.indexofAll + 1;
             this.group = lastNode.group;//point to first item group;
 
-            this.group.height +=this.height;
+            this.group.height +=(this.height+_gapping);
             if(this.lastLevelLastItem!=null){
                 this.lastLevelLastItem.y+=this.height/2;
                 // last level item height ++;
@@ -69,8 +68,8 @@ function t_Node(splitedString, lastNode = null) {
                 this.indexofAll = lastNode.indexofAll + 1;
 
                 this.lastLevelLastItem = this.levelLastItem(this.level-1);
-                var _lastone = this.levelLastItem(this.level);
-                console.log(_lastone);
+                var _lastone = lastNode .levelLastItem(this.level);
+                console.log(_lastone.level,_lastone.indexofAll,_lastone);
                 this.group = _lastone.group;
                 
                 _lastone.group.height += lastNode.group.height;
@@ -83,7 +82,7 @@ function t_Node(splitedString, lastNode = null) {
                 this.lastLevelLastItem = lastNode;
                 this.indexofAll = lastNode.indexofAll + 1;
                 this.x = lastNode.x + lastNode.group.width;
-                this.y = lastNode.y + this.height;
+                this.y = lastNode.y;
                 this.group = new Graphic(this, 'rect', this.x, this.y, this.width, this.height);
                 
 
@@ -102,6 +101,8 @@ t_Node.prototype.levelLastItem = function (level) {
     }
     return this.lastNode.levelLastItem(level);
 }
+
+
 t_Node.prototype.draw = function () {
     this.graphic.draw();
     CanvStyle.Node();
@@ -129,8 +130,6 @@ var Handle_text = {
     FrontKeywordsCount: function (sourceText, keyword) {
         var _count = 0;
         var _text = sourceText;
-        console.log(sourceText);
-        
 
         if (_text.indexOf(keyword) != 0) { return 0 }
         while (_text.indexOf(keyword) == 0) {
