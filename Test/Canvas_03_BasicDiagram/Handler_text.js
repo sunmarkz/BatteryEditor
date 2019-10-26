@@ -7,104 +7,211 @@ const _gapping = 20;
 
 
 function t_Node(splitedString, lastNode = null) {
-
     //count how many tab have define which level is.
     this.level = Handle_text.FrontKeywordsCount(splitedString, _tabText);
-    
+
     // this.content = Handle_text.FrontKeywordsFilter(splitedString, _tabText);
     this.content = splitedString;
-
-
     // TODO : render text fulfill multiply line text
     // this.renderText = Handle_text.RenderTextInGraphic;
 
+    // these attributes need to initial in link ();
+    this.indexOfLevel = 0;
+    this.parentNode = null;
     this.lastNode = lastNode;
-    // CanvStyle.Text();
+    this.nextNode = null;
+    this.previousNode = null;
+    this.firstInLevel = null;
+    this.childrenNode = [];
+
 
     this.width = d.measureText(splitedString).width;
     this.height = singleLetterHeight;
 
-    if (lastNode == null) {
-        //first item initialize
+    this.lastNode && lastNode.link(this);
+}
+Object.defineProperties(t_Node.prototype, {
+    groupHeight: {
 
-        //this.level = 0;
-        this.indexofLevel = 0;
-        this.lastLevelLastItem = null;
-        this.indexofAll = 0;
-        this.x = _startLocation.x;
-        this.y = _startLocation.y;
+        get: function () {
+            //first level case : 
+            var result = this.height; // if no next one is this.height;
+            var nextnode = this.nextNode; // nextnode point to next one;
+            while (nextnode) {
 
-        //group = this node's group;
-        this.group = new Graphic(this, 'rect', this.x, this.y + _gapping,this.width+_gapping,this.height);
+                result += nextnode.childrenHeight; // trace every child node;
+                nextnode = nextnode.nextNode; // nextnode point to next next one;
+            }
+            return result;
+        }
 
-    } else {
-
-        if (lastNode.level == this.level) {
-            // on same level 
-            this.indexofLevel = lastNode.indexofLevel + 1;
-            this.lastLevelLastItem = lastNode.lastLevelLastItem;
-            this.indexofAll = lastNode.indexofAll + 1;
-            this.group = lastNode.group;//point to first item group;
-
-            this.group.height +=(this.height+_gapping);
-            if(this.lastLevelLastItem!=null){
-                this.lastLevelLastItem.y+=this.height/2;
-                // last level item height ++;
+    },
+    groupWith: {
+        get: function () {
+            //return present group width;
+            var _nextnode = this.nextNode;
+            var resut = this.width;
+            while (!_nextnode) {
+                result = _nextnode.width > resut ? _nextnode.width : result;
+                //if nextnode.width > this one  result change to nextnode.width;
+                _nextnode = _nextnode.nextNode;
+                // nextnode point to its next node;
+            }
+            return result;
+        }
+    },
+    x: {
+        get: function () {
+            if (this.parentNode == null) {
+                // first one initial 
+                return _startLocation.x;
+            }
+            if (this.indexOfLevel == 0) {
+                return (this.parentNode.x + this.parentNode.width);
             }
 
-            if (this.width > this.group.width) {
-                // get biggest width in group
-                this.group.width = this.width;
-            } 
-
-            this.x = this.group.x;
-            this.y = this.group.y + this.group.height;
-
-        } else {
-            //level change !
-            if (this.level < lastNode.level) {
-                //upper level
-                this.indexofLevel = 0;
-                this.indexofAll = lastNode.indexofAll + 1;
-
-                this.lastLevelLastItem = this.levelLastItem(this.level-1);
-                var _lastone = lastNode .levelLastItem(this.level);
-                console.log(_lastone.level,_lastone.indexofAll,_lastone);
-                this.group = _lastone.group;
-                
-                _lastone.group.height += lastNode.group.height;
-                this.x = _lastone.x;
-                this.y = this.group.y+this.group.height;
-
-            } else {
-                // next level
-                this.indexofLevel = 0;
-                this.lastLevelLastItem = lastNode;
-                this.indexofAll = lastNode.indexofAll + 1;
-                this.x = lastNode.x + lastNode.group.width;
-                this.y = lastNode.y;
-                this.group = new Graphic(this, 'rect', this.x, this.y, this.width, this.height);
-                
-
+            return this.previousNode.x;
+        }
+    },
+    groupLength: {
+        get: function () {
+            if (this.parentNode) {
+                return this.parentNode.childrenNode.length;
+            }
+            var result = 0;
+            var _node = this.firstInLevel;
+            while (_node) {
+                // EXTENTION: this can be minimal height of present, check is it clashed;
+                result += _node.childrenHeight; // add _node's childheight;
+                _node = _node.nextNode; // node link to next one;
             }
         }
-    }
-    this.graphic = new Graphic(this, 'rect', this.x, this.y - _lineHeight * 2, this.width, this.height);
-}
+    },
+    childLength: {
+        get: function () {
+            return this.childrenNode.length;
+        }
+    },
+    y: {
+        get: function () {
+            if (this.lastNode == null) {
+                //first one initial 
+                return (_startLocation.y + this.height);
+            }
 
-t_Node.prototype.levelLastItem = function (level) {
-    if(this.level == level){
-        return this;
+            if (!this.parentNode) {
+                // first level
+                return (this.previousNode.y + (this.childrenHeight / 2) + (this.height / 2));
+            }
+            if (!this.previousNode) {
+                //if this is first one in this group;
+                return (this.parentNode.y - (this.groupHeight / 2) + this.height / 2);
+            }
+            return (this.previousNode.y + this.height + (this.childrenHeight / 2))
+            // return previous one's y  + height + offset from its child;
+        }
+    },
+    childrenHeight: {
+        get: function () {
+            if (!this.childrenNode) {
+                return this.height;
+            }
+
+            var _result = this.childrenNode.reduce(function (x, y) {
+                return (x.childrenHeight + y.childrenHeight);
+            }, 0)
+
+            return _result;
+        },
+
     }
-    if(this.lastNode == null){
-        return null;
+})
+
+
+
+t_Node.prototype.link = function (tnode) {
+    if (tnode == null) {
+        return;
     }
-    return this.lastNode.levelLastItem(level);
-}
+    if (tnode.level == this.level) {
+        // on same level node 
+        // append tnode before this
+        tnode.previousNode = this;
+        tnode.parentNode = this.parentNode || null;
+        this.parentNode && this.parentNode.childrenNode.push(tnode); // this.parentNode push tnode!
+        this.nextNode = tnode; // this nextNode link to tnode;
+        tnode.firstInLevel = this.firstInLevel; // make tnode's first in group same as this
+        tnode.indexOfLevel = this.indexOfLevel + 1; // make index ++
+        return;
+    }
+    if (tnode.level < this.level) {
+        //tnode is this 's parent;
+        // Attention! it means new level! 
+        // need to handle jumped append case;
+
+        if (tnode.level == this.level - 1) {
+            //deal prevous level node case;
+            console.log(this);
+            this.parentNode.nextNode = tnode;
+
+            tnode.firstInLevel = tnode;
+            tnode.previousNode = this.parentNode;
+            return;
+        }
+
+        //deal jumped previous level node;
+        var _tnodeBeforeNode = this.lastItemInLevel(tnode.level);
+        if (!_tnodeBeforeNode) { return; }
+        // here might be inifinite
+        _tnodeBeforeNode.link(tnode); // same level's last item handle tnode;
+        tnode.firstInLevel = _tnodeBeforeNode.firstInLevel; // link first node in present group
+
+        return;
+    }
+    if (tnode.level > this.level) {
+        // append child
+        if (tnode.level = this.level + 1) {
+            // deal with next level case, meas tnode is this's child
+            tnode.parentNode = this; // tnode's parent is this.
+            this.childrenNode.push(tnode); // push tnode to child list;
+            return;
+
+        } else {
+            tnode.level = this.level + 1;
+            // if appended node jumped level, fix to this's child node;
+            this.link(tnode); // redo link (fixed node) ;
+            return;
+        }
+    }
+},
+    t_Node.prototype.lastItemInLevel = function (level) {
+
+        if (this.level > level) {
+            var _parentnode = this.parentNode || null;
+
+            while (!_parentnode) {
+                if (_parentnode.level == level) {
+                    // if find it return parent node 
+                    //find last one in this level;
+
+                    // while(!_parentnode.nextNode){
+                    //     _parentnode = _parentnode.nextNode;
+                    // }
+                    break;
+                }
+                //if not make parentnode point to its parentnode; 
+                _parentnode = _parentnode.parentNode;
+            }
+
+            return _parentnode;
+        } else {
+            throw ('can only find previous level last item', this.level, level);
+        }
+    }
 
 
 t_Node.prototype.draw = function () {
-    this.graphic.draw();
+    CanvDraw.rect(this.x, this.y - this.height, this.width, this.height);
     CanvStyle.Node();
     CanvStyle.Text();
 
@@ -133,9 +240,9 @@ var Handle_text = {
 
         if (_text.indexOf(keyword) != 0) { return 0 }
         while (_text.indexOf(keyword) == 0) {
-                _count++;
-                _text = _text.slice(1);
-            } 
+            _count++;
+            _text = _text.slice(1);
+        }
         return _count;
     },
 
@@ -144,7 +251,7 @@ var Handle_text = {
         while (_text.indexOf(keyword) == 0) {
             _count++;
             _text = _text.slice(1);
-        } 
+        }
         return _text;
     },
 
@@ -247,6 +354,7 @@ function Text2Diagram() {
     //Level:parentNode / id : applyID / Sub-order : order in level;
 
     s = Handle_text.levelGenerator(s);
+    // Board.clear()
     s.forEach(i => {
         if (i != null) {
             i.draw();
