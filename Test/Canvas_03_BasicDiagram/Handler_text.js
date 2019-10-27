@@ -1,7 +1,7 @@
 
 const _tabText = '-'; // this is tab letter in textarea;
 const _startLocation = { x: 50, y: 50 };
-const _lineHeight = 10;
+const _lineHeight = singleLetterHeight;
 const _lineWidth = 20;
 const _gapping = 20;
 
@@ -21,12 +21,12 @@ function t_Node(splitedString, lastNode = null) {
     this.lastNode = lastNode;
     this.nextNode = null;
     this.previousNode = null;
-    this.firstInLevel = null;
+    this.firstInLevel = !this.lastNode ? this : null;
     this.childrenNode = [];
 
 
     this.width = d.measureText(splitedString).width;
-    this.height = singleLetterHeight;
+    this.height = _lineHeight;
 
     this.lastNode && lastNode.link(this);
 }
@@ -50,7 +50,7 @@ Object.defineProperties(t_Node.prototype, {
         get: function () {
             //return present group width;
             var _nextnode = this.nextNode;
-            var resut = this.width;
+            var result = this.width;
             while (!_nextnode) {
                 result = _nextnode.width > resut ? _nextnode.width : result;
                 //if nextnode.width > this one  result change to nextnode.width;
@@ -58,7 +58,8 @@ Object.defineProperties(t_Node.prototype, {
                 // nextnode point to its next node;
             }
             return result;
-        }
+        },
+   
     },
     x: {
         get: function () {
@@ -89,18 +90,19 @@ Object.defineProperties(t_Node.prototype, {
     },
     childLength: {
         get: function () {
-            return this.childrenNode.length;
+            return (this.childrenNode.length || 0);
         }
     },
     y: {
         get: function () {
             if (this.lastNode == null) {
                 //first one initial 
-                return (_startLocation.y + this.height);
+                return (_startLocation.y + this.height+ (this.childrenHeight/2));
             }
 
             if (!this.parentNode) {
                 // first level
+                
                 return (this.previousNode.y + (this.childrenHeight / 2) + (this.height / 2));
             }
             if (!this.previousNode) {
@@ -116,11 +118,12 @@ Object.defineProperties(t_Node.prototype, {
             if (!this.childrenNode) {
                 return this.height;
             }
-
-            var _result = this.childrenNode.reduce(function (x, y) {
-                return (x.childrenHeight + y.childrenHeight);
-            }, 0)
-
+            var _result = 0;
+            this.childrenNode.forEach(i=>{
+                _result = _result+ i.childrenHeight;
+            });
+            console.log(_result);
+            
             return _result;
         },
 
@@ -131,6 +134,7 @@ Object.defineProperties(t_Node.prototype, {
 
 t_Node.prototype.link = function (tnode) {
     if (tnode == null) {
+
         return;
     }
     if (tnode.level == this.level) {
@@ -151,7 +155,6 @@ t_Node.prototype.link = function (tnode) {
 
         if (tnode.level == this.level - 1) {
             //deal prevous level node case;
-            console.log(this);
             this.parentNode.nextNode = tnode;
 
             tnode.firstInLevel = tnode;
@@ -214,7 +217,7 @@ t_Node.prototype.draw = function () {
     CanvDraw.rect(this.x, this.y - this.height, this.width, this.height);
     CanvStyle.Node();
     CanvStyle.Text();
-
+    
     CanvDraw.t(this.content, this.x, this.y, this.width);
 
 }
