@@ -19,7 +19,6 @@ function t_Node(splitedString, lastNode = null) {
     this.width = d.measureText(splitedString).width;
     this.height = _lineHeight;
     this.child = [];
-    this.childHeight = 0;
 }
 
 function t_NodeGenerator(list) {
@@ -34,22 +33,22 @@ function t_NodeGenerator(list) {
         // childrens height;
         if(_node.child ==null){
             _node.childHeight = this.height;
+            _node.childWidth = this.width;
         }else{
             _node.child.forEach(i=>{
                 _node.childHeight+= i.childHeight;
+                _node.childWidth < i.width && (_node.childWidth = i.width) ;
             })
         }
-
         _levelList[_node.level+1] = [];
         _levelList[_node.level].shift(_node);
-
-
-
-        
-        
     }
 }
 
+t_NodeDraw = function (list){
+    var s = list.rever();
+    
+}
 
 
 t_Node.prototype.draw = function () {
