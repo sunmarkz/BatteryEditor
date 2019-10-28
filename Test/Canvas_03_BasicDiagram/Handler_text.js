@@ -16,201 +16,40 @@ function t_Node(splitedString, lastNode = null) {
     // this.renderText = Handle_text.RenderTextInGraphic;
 
     // these attributes need to initial in link ();
-    this.indexOfLevel = 0;
-    this.parentNode = null;
-    this.lastNode = lastNode;
-    this.nextNode = null;
-    this.previousNode = null;
-    this.firstInLevel = !this.lastNode ? this : null;
-    this.childrenNode = [];
-
-
     this.width = d.measureText(splitedString).width;
     this.height = _lineHeight;
-
-    this.lastNode && lastNode.link(this);
+    this.child = [];
+    this.childHeight = 0;
 }
-Object.defineProperties(t_Node.prototype, {
-    groupHeight: {
 
-        get: function () {
-            //first level case : 
-            var result = this.height; // if no next one is this.height;
-            var nextnode = this.nextNode; // nextnode point to next one;
-            while (nextnode) {
+function t_NodeGenerator(list) {
+    var s = list.reverse();
+    var _levelList = [];
+    for (let i = 0; i < s.length; i++) {
+        var _item = s[i];
+        var _node = new t_Node(_item);
 
-                result += nextnode.childrenHeight; // trace every child node;
-                nextnode = nextnode.nextNode; // nextnode point to next next one;
-            }
-            return result;
+        _node.child = _levelList[_node.level+1] || null;
+
+        // childrens height;
+        if(_node.child ==null){
+            _node.childHeight = this.height;
+        }else{
+            _node.child.forEach(i=>{
+                _node.childHeight+= i.childHeight;
+            })
         }
 
-    },
-    groupWith: {
-        get: function () {
-            //return present group width;
-            var _nextnode = this.nextNode;
-            var result = this.width;
-            while (!_nextnode) {
-                result = _nextnode.width > resut ? _nextnode.width : result;
-                //if nextnode.width > this one  result change to nextnode.width;
-                _nextnode = _nextnode.nextNode;
-                // nextnode point to its next node;
-            }
-            return result;
-        },
-   
-    },
-    x: {
-        get: function () {
-            if (this.parentNode == null) {
-                // first one initial 
-                return _startLocation.x;
-            }
-            if (this.indexOfLevel == 0) {
-                return (this.parentNode.x + this.parentNode.width);
-            }
+        _levelList[_node.level+1] = [];
+        _levelList[_node.level].shift(_node);
 
-            return this.previousNode.x;
-        }
-    },
-    groupLength: {
-        get: function () {
-            if (this.parentNode) {
-                return this.parentNode.childrenNode.length;
-            }
-            var result = 0;
-            var _node = this.firstInLevel;
-            while (_node) {
-                // EXTENTION: this can be minimal height of present, check is it clashed;
-                result += _node.childrenHeight; // add _node's childheight;
-                _node = _node.nextNode; // node link to next one;
-            }
-        }
-    },
-    childLength: {
-        get: function () {
-            return (this.childrenNode.length || 0);
-        }
-    },
-    y: {
-        get: function () {
-            if (this.lastNode == null) {
-                //first one initial 
-                return (_startLocation.y + this.height+ (this.childrenHeight/2));
-            }
 
-            if (!this.parentNode) {
-                // first level
-                
-                return (this.previousNode.y + (this.childrenHeight / 2) + (this.height / 2));
-            }
-            if (!this.previousNode) {
-                //if this is first one in this group;
-                return (this.parentNode.y - (this.groupHeight / 2) + this.height / 2);
-            }
-            return (this.previousNode.y + this.height + (this.childrenHeight / 2))
-            // return previous one's y  + height + offset from its child;
-        }
-    },
-    childrenHeight: {
-        get: function () {
-            if (!this.childrenNode) {
-                return this.height;
-            }
-            var _result = 0;
-            this.childrenNode.forEach(i=>{
-                _result = _result+ i.childrenHeight;
-            });
-            console.log(_result);
-            
-            return _result;
-        },
 
+        
+        
     }
-})
+}
 
-
-
-t_Node.prototype.link = function (tnode) {
-    if (tnode == null) {
-
-        return;
-    }
-    if (tnode.level == this.level) {
-        // on same level node 
-        // append tnode before this
-        tnode.previousNode = this;
-        tnode.parentNode = this.parentNode || null;
-        this.parentNode && this.parentNode.childrenNode.push(tnode); // this.parentNode push tnode!
-        this.nextNode = tnode; // this nextNode link to tnode;
-        tnode.firstInLevel = this.firstInLevel; // make tnode's first in group same as this
-        tnode.indexOfLevel = this.indexOfLevel + 1; // make index ++
-        return;
-    }
-    if (tnode.level < this.level) {
-        //tnode is this 's parent;
-        // Attention! it means new level! 
-        // need to handle jumped append case;
-
-        if (tnode.level == this.level - 1) {
-            //deal prevous level node case;
-            this.parentNode.nextNode = tnode;
-
-            tnode.firstInLevel = tnode;
-            tnode.previousNode = this.parentNode;
-            return;
-        }
-
-        //deal jumped previous level node;
-        var _tnodeBeforeNode = this.lastItemInLevel(tnode.level);
-        if (!_tnodeBeforeNode) { return; }
-        // here might be inifinite
-        _tnodeBeforeNode.link(tnode); // same level's last item handle tnode;
-        tnode.firstInLevel = _tnodeBeforeNode.firstInLevel; // link first node in present group
-
-        return;
-    }
-    if (tnode.level > this.level) {
-        // append child
-        if (tnode.level = this.level + 1) {
-            // deal with next level case, meas tnode is this's child
-            tnode.parentNode = this; // tnode's parent is this.
-            this.childrenNode.push(tnode); // push tnode to child list;
-            return;
-
-        } else {
-            tnode.level = this.level + 1;
-            // if appended node jumped level, fix to this's child node;
-            this.link(tnode); // redo link (fixed node) ;
-            return;
-        }
-    }
-},
-    t_Node.prototype.lastItemInLevel = function (level) {
-
-        if (this.level > level) {
-            var _parentnode = this.parentNode || null;
-
-            while (!_parentnode) {
-                if (_parentnode.level == level) {
-                    // if find it return parent node 
-                    //find last one in this level;
-
-                    // while(!_parentnode.nextNode){
-                    //     _parentnode = _parentnode.nextNode;
-                    // }
-                    break;
-                }
-                //if not make parentnode point to its parentnode; 
-                _parentnode = _parentnode.parentNode;
-            }
-
-            return _parentnode;
-        } else {
-            throw ('can only find previous level last item', this.level, level);
-        }
-    }
 
 
 t_Node.prototype.draw = function () {
@@ -349,7 +188,7 @@ function Text2Diagram() {
     //Handle_text split lines.
     //will return an array contain [abc, cde,  efg,]
     s = Handle_text.lineSeperator(s);
-
+    s.reverse();
     //Calculate level between each item.
     //seperate by count space symbol
     //will generate[node1,node2,node3,node4];
@@ -370,3 +209,27 @@ function Text2Diagram() {
 
 
 
+/*
+[1,-2,-3,--3]
+reverse 
+|
+[--1,-2,-3,4,--5,-6,7]
+|
+read this:
+--1:  this.child=level3[].reverse, this.height = ...this.childrens.height , level3=[], level2 shift(this);  
+level 2 : [--1[]]
+-2 : this.child= level2[--1].reverse, this.height = this.childrens.height, level2=[], level1 shift(this);
+level1 : [-2[--1]]
+-3 : this.child = [], this.height =0||1-line, level2 = [], level1 shift(this);
+level 1 :[-3[],-2[--3]]
+4 : this.child=level1[-3,-2[--3]].reverse, this.height= this.childrensHeight, level1=[], level0 shift(this);
+level0: [4[-3,-2[--3]]]
+
+[out stack]: --3.index = level2.length-i.index, -3 level2[] clear;
+
+
+
+
+
+
+*/
