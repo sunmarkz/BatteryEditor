@@ -6,57 +6,91 @@ const _lineWidth = 20;
 const _gapping = 20;
 
 
-function t_Node(splitedString, lastNode = null) {
-    //count how many tab have define which level is.
-    this.level = Handle_text.FrontKeywordsCount(splitedString, _tabText);
+function t_Node(splitedString) {
 
-    // this.content = Handle_text.FrontKeywordsFilter(splitedString, _tabText);
-    this.content = splitedString;
-    // TODO : render text fulfill multiply line text
-    // this.renderText = Handle_text.RenderTextInGraphic;
+    if (splitedString != false) {
+        this.level = Handle_text.FrontKeywordsCount(splitedString, _tabText) + 1;
+        this.content = Handle_text.FrontKeywordsFilter(splitedString, _tabText);
+    } else {
+        this.content = null;
+    }
 
-    // these attributes need to initial in link ();
-    this.width = d.measureText(splitedString).width;
+    this.width = d.measureText(this.content).width;
     this.height = _lineHeight;
     this.child = [];
+    this.childHeight = 0;
+    this.childWidth = 0;
+}
+t_Node.prototype.locationUpdate = function (Xstart, Ystart) {
+    this.groupX = Xstart;
+    this.groupY = Ystart;
+    this.x = this.groupX;
+    this.y = this.groupY + (this.childHeight / 2);
+    if (!this.child) {
+        return;
+    }
+
+    var _yAddtion = 0;
+    for (let i = 0; i < this.child.length; i++) {
+        let _item = this.child[i];
+        _item.locationUpdate(this.groupX + this.width, this.groupY + _yAddtion);
+        _item.groupY = this.groupY + _yAddtion;
+        _yAddtion += _item.childHeight;
+    }
+
 }
 
 function t_NodeGenerator(list) {
-    var s = list.reverse();
-    var _levelList = [];
+
+    var s = list;
+    var _startNode = new t_Node(null);
+    _startNode.level = 0;
+    _startNode.x = 10;
+    _startNode.y = 50;
+
+    var _levelList = [_startNode];
     for (let i = 0; i < s.length; i++) {
         var _item = s[i];
         var _node = new t_Node(_item);
 
-        _node.child = _levelList[_node.level+1] || null;
+        _levelList[_node.level + 1] && (_node.child = _levelList[_node.level + 1]);
 
         // childrens height;
-        if(_node.child ==null){
-            _node.childHeight = this.height;
-            _node.childWidth = this.width;
-        }else{
-            _node.child.forEach(i=>{
-                _node.childHeight+= i.childHeight;
-                _node.childWidth < i.width && (_node.childWidth = i.width) ;
+        if (_node.child == false) {
+            _node.childHeight = _node.height;
+            _node.childWidth = _node.width;
+        } else {
+            _node.child.forEach(i => {
+                _node.childHeight += i.childHeight;
+                _node.childWidth < i.width && (_node.childWidth = i.width);
             })
         }
-        _levelList[_node.level+1] = [];
-        _levelList[_node.level].shift(_node);
+        _levelList[_node.level + 1] && delete _levelList[_node.level + 1];
+        !_levelList[_node.level] && (_levelList[_node.level] = [])
+        _levelList[_node.level].unshift(_node);
     }
+    _levelList.length = 1;
+    return (_levelList[0]);
+
 }
 
-t_NodeDraw = function (list){
-    var s = list.rever();
-    
-}
+
+
+
 
 
 t_Node.prototype.draw = function () {
-    CanvDraw.rect(this.x, this.y - this.height, this.width, this.height);
-    CanvStyle.Node();
-    CanvStyle.Text();
-    
-    CanvDraw.t(this.content, this.x, this.y, this.width);
+    // CanvDraw.rect(20, this.y, this.width, this.height);
+    if (this.content != null) {
+        CanvStyle.Node();
+        CanvStyle.Text();
+
+        CanvDraw.t(this.content, this.x, this.y, this.width);
+    }
+    if (this.child == false) { return; }
+    for (let i = 0; i < this.child.length; i++) {
+        this.child[i].draw();
+    }
 
 }
 
@@ -78,8 +112,9 @@ var Handle_text = {
     FrontKeywordsCount: function (sourceText, keyword) {
         var _count = 0;
         var _text = sourceText;
+        if (_text instanceof String == false){return 0}
 
-        if (_text.indexOf(keyword) != 0) { return 0 }
+        if ( _text.indexOf(keyword) != 0 ) { return 0 }
         while (_text.indexOf(keyword) == 0) {
             _count++;
             _text = _text.slice(1);
@@ -88,7 +123,11 @@ var Handle_text = {
     },
 
     FrontKeywordsFilter: function (sourceText, keyword) {
+        var _count = 0;
         var _text = sourceText;
+        if(_text instanceof String == false){
+            return _text;
+        }
         while (_text.indexOf(keyword) == 0) {
             _count++;
             _text = _text.slice(1);
@@ -97,20 +136,13 @@ var Handle_text = {
     },
 
     levelGenerator: function (input) {
-
-
         // raw text will transfer to lineSeperator:
         var _lineSepertedText = input instanceof Array == true ? input : this.lineSeperator(input);
-
         //initialize container
         var outputNodes = [null];
-
-
         //read items in line Seperated Text;
         for (let i = 0; i < _lineSepertedText.length; i++) {
-
             outputNodes.push(new t_Node(_lineSepertedText[i], outputNodes[outputNodes.length - 1]));
-
         }
 
         return outputNodes;
@@ -194,41 +226,13 @@ function Text2Diagram() {
     //node Structure:
     //Level:parentNode / id : applyID / Sub-order : order in level;
 
-    s = Handle_text.levelGenerator(s);
-    // Board.clear()
-    s.forEach(i => {
-        if (i != null) {
-            i.draw();
-        }
+    s = t_NodeGenerator(s);
+    console.log(s);
+    
+    s.locationUpdate(10, 15);
+    s.draw();
 
-    });
 
 
 }
-
-
-
-/*
-[1,-2,-3,--3]
-reverse 
-|
-[--1,-2,-3,4,--5,-6,7]
-|
-read this:
---1:  this.child=level3[].reverse, this.height = ...this.childrens.height , level3=[], level2 shift(this);  
-level 2 : [--1[]]
--2 : this.child= level2[--1].reverse, this.height = this.childrens.height, level2=[], level1 shift(this);
-level1 : [-2[--1]]
--3 : this.child = [], this.height =0||1-line, level2 = [], level1 shift(this);
-level 1 :[-3[],-2[--3]]
-4 : this.child=level1[-3,-2[--3]].reverse, this.height= this.childrensHeight, level1=[], level0 shift(this);
-level0: [4[-3,-2[--3]]]
-
-[out stack]: --3.index = level2.length-i.index, -3 level2[] clear;
-
-
-
-
-
-
-*/
+document.getElementById('sss').value = 'level0\n-L1\n-L1\n--L2\n--L2_1\n\---L3';
