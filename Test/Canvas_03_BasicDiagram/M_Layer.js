@@ -6,6 +6,12 @@ function ResourceManager (){
 }
 
 Layer_ = ResourceManager.prototype;
+Layer_.clear = function (){
+    this.elements.clear();
+    this.link.clear();
+    this.elementSelection.clear();
+    
+}
 Layer_.push = function(s) {
 
     if (s instanceof eBattery ){
