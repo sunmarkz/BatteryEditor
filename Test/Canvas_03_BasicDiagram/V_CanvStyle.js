@@ -32,7 +32,7 @@ Node: function() {
 
 Text: function() {
     d.setLineDash([]);
-        d.font = '30px Calibri';
+    d.font = _singleLetterHeight+'px Calibri';
         d.fillStyle = 'black'
     },
 CtrlDot : function(){

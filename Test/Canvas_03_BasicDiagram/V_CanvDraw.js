@@ -1,5 +1,5 @@
-const margin = 7;
-const singleLetterHeight = 30;
+const _margin = 5;
+const _singleLetterHeight = 30;
 
 var CanvDraw = {
     rect: function (x , y , w , h ){
@@ -12,7 +12,7 @@ var CanvDraw = {
         d.arc(x, y, r, 0, Math.PI * 2);
         d.closePath();
     },
-    t:function(t,x,y,width,height = singleLetterHeight){
+    t:function(t,x,y,width,height = _singleLetterHeight){
         
         d.fillText(t, x , y  , width,height);
     }

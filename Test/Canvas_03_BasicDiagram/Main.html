@@ -16,7 +16,7 @@
     </div>
     <canvas id="MyCanvas" stroke='black'>
     </canvas>
-    <textarea id = 'sss' rows = '10' style = 'position: absolute; left: 800;' ></textarea>
+    <textarea id = 'inputWindow' rows = '10' style = 'position: absolute; left: 800;' ></textarea>
 </body>
 <script src="./V_CanvStyle.js"></script>
 <script src="./V_CanvDraw.js"></script>
@@ -37,10 +37,11 @@
 <script src='./Save.js'></script>
 <script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.js"></script>
 <script src='./C_EventHandler_Key.js'></script>
-
+<script src="./M_Text2Diagram.js"></script>
 
 <script>
     var body = document.querySelector('body');
+    var inputTextarea = document.getElementById('inputWindow');
 
     // Initialization
     var Canvas = document.getElementById('MyCanvas');
@@ -53,7 +54,7 @@
     Canvas.style.position = 'absolute';
     Bar.style.position = 'absolute';
     window.addEventListener("resize", resizeCanvas, false);
-    resizeCanvas()
+    resizeCanvas(); //initial resize window event
 
     function resizeCanvas() {
         Canvas.style.width = (window.innerWidth + 'px');
@@ -61,27 +62,23 @@
         w = Canvas.width = window.innerWidth * CanvQualityEnhanceVector;
         h = Canvas.height = (window.innerHeight - 22) * CanvQualityEnhanceVector;
         Bar.style.top = (window.innerHeight - 22 + 'px')
+        inputTextarea.style.height = window.innerHeight;
+        inputTextarea.style.left = window.innerWidth/3*2;
+        inputTextarea.style.width = window.innerWidth>300 ? window.innerWidth/3 : 300;
     }
 
     d = Canvas.getContext('2d');
+     // initial text, otherwise textmeasure will not correct
 
+    inputTextarea.value = 'level0\n-L1\n-L1\n--L2\n--L2_1\n\---L3\nL0\nL0';
 
-    //======================================================================================
-
-    _ResourceManager = new ResourceManager;
-    var a  =  new eBattery(1,2); 
-    // _ResourceManager.push(new eBattery(10, 30, 30, 100, '0'));
-    // _ResourceManager.push(new eBattery(50, 50, 100, 100, '1'));
-    // _ResourceManager.push(new eBattery(200, 300, 50, 50, '2'));
-    // _ResourceManager.push(new eBattery(500, 600, 200, 200, '3aaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'));
-
-    var selectBox = null;
-    var Board = new Canv(d, _ResourceManager);
-    Board.redraw();
-    var _History = new history();
-    _History.record();
-    var _EventListener = new EventHandler(Canvas);
+    InitialAll();
     Text2Diagram();
+    inputTextarea.onkeyup = function () {
+            InitialAll();
+            Text2Diagram();
+        }
+
 
 </script>
 

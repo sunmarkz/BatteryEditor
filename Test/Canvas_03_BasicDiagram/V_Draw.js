@@ -46,12 +46,17 @@ function Draw(s, type = null) {
     }
 
     function d_text(s) {
+        
+        if(!s.Text){
+            return;
+        }
 
         var textContent = Handle_text.lineSeperator(s.Text);
         textContent = Handle_text.TextInGraphic(textContent,s.graphic);
         for (let i = 0; i < textContent.length; i++) {
                 CanvStyle.Text();
-            CanvDraw.t(textContent[i], s.x + margin, s.y + + margin+singleLetterHeight * (i + 1), s.width);
+                let _y = (((s.height)/(textContent.length+1))* (i+1)) + s.y +(_singleLetterHeight/2)-5;
+            CanvDraw.t(textContent[i], s.x + _margin, _y, s.width);
         }
         
 

@@ -1,11 +1,19 @@
-
+var InitialAll = function () {
+    _ResourceManager = new ResourceManager;
+    Board = new Canv(d, _ResourceManager);
+    CanvStyle.Text();
+    _History = new history();
+    _History.record();
+    _EventListener = new EventHandler(Canvas);
+    Board.redraw();
+}
 var Overall = {
     isOn: function (e) {
         var list = [...this.operateList()];
         var p = e;
         var on = null;
         for (let i = 0; i < list.length; i++) {
-            var j=list[i];
+            var j = list[i];
             if (j instanceof eLink == true) {
                 if (j.graphic_C.isOn(p)) {
                     on = j;
@@ -55,8 +63,8 @@ var Overall = {
             return ('Noselection');
         }
     },
-    Del : function(input){
-        if(input instanceof eBattery){
+    Del: function (input) {
+        if (input instanceof eBattery) {
             _ResourceManager.del(input);
             _History.record()
         }

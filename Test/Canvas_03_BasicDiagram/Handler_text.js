@@ -1,103 +1,6 @@
 
 const _tabText = '-'; // this is tab letter in textarea;
-const _startLocation = { x: 50, y: 50 };
-const _lineHeight = singleLetterHeight;
-const _lineWidth = 20;
-const _gapping = 30;
 
-
-function t_Node(splitedString) {
-
-    if (splitedString != false) {
-        this.level =(( Handle_text.FrontKeywordsCount(splitedString, _tabText) )+ 1);
-        this.content = Handle_text.FrontKeywordsFilter(splitedString, _tabText);
-    } else {
-        this.content = null;
-    }
-
-    this.width = d.measureText(this.content).width;
-    this.height = _lineHeight;
-    this.child = [];
-    this.childHeight = 0;
-    this.childWidth = 0;
-}
-t_Node.prototype.locationUpdate = function (Xstart, Ystart) {
-    this.groupX = Xstart ;
-    this.groupY = Ystart;
-    this.x = this.groupX;
-    this.y = this.groupY + (this.childHeight / 2)  ;
-    
-    if (!this.child) {
-        return;
-    }
-
-    var _yAddtion = 0;
-    for (let i = 0; i < this.child.length; i++) {
-        let _item = this.child[i];
-        _item.locationUpdate(this.groupX + this.width + (_gapping*2), this.groupY + _yAddtion);
-        _item.groupY = this.groupY + _yAddtion;
-        _yAddtion += _item.childHeight+(_gapping);
-    }
-
-}
-
-function t_NodeGenerator(list) {
-
-    var s = list;
-    var _levelList = [];
-
-    for (let i = 0; i < s.length; i++) {
-        var _item = s[i];
-        var _node = new t_Node(_item);
-
-        _levelList[_node.level + 1] && (_node.child = _levelList[_node.level + 1]);
-
-        // childrens height;
-        if (_node.child == false) {
-            _node.childHeight = _node.height ;
-            _node.childWidth = _node.width ;
-        } else {
-            _node.child.forEach(i => {
-                _node.childHeight += i.childHeight;
-                _node.childWidth < i.width && (_node.childWidth = i.width);
-            })
-        }
-        _levelList[_node.level + 1] && delete _levelList[_node.level + 1];
-        !_levelList[_node.level] && (_levelList[_node.level] = [])
-        _levelList[_node.level].unshift(_node);
-    }
-
-    _levelList = _levelList.filter(function(x){
-        return x });
-    console.log('_level',_levelList[0]);
-            
-
-    var _startNode = new t_Node(null);
-    _startNode.level = 0;
-    _startNode.x = 10;
-    _startNode.y = 50;
-    _startNode.child = _levelList[0];
-
-    return (_startNode);
-
-}
-
-t_Node.prototype.draw = function () {
-    // CanvDraw.rect(20, this.y, this.width, this.height);
-    if (this.content != null) {
-        this.battery = new eBattery(this.x - (_lineHeight / 2), this.y, this.width + (_lineHeight), this.height + (_lineHeight / 2),this.content)
-        // CanvDraw.rect(this.x - (_lineHeight / 2), this.y , this.width + (_lineHeight), this.height + (_lineHeight/2));
-        // CanvStyle.Node();
-        // CanvStyle.Text();
-        // CanvDraw.t(this.content, this.x, this.y + (_lineHeight), this.width);
-        _ResourceManager.push(this.battery);
-    }
-    if (this.child == false) { return; }
-    for (let i = 0; i < this.child.length; i++) {
-        this.child[i].draw();
-    }
-
-}
 
 var Handle_text = {
     lineSeperator: function (input) {
@@ -166,8 +69,8 @@ var Handle_text = {
         if (textContent) {
 
 
-            let textArea_Width = s.width - (margin * 2);
-            let textArea_Height = (s.height - (margin * 2)) / singleLetterHeight;
+            let textArea_Width = s.width - (_margin * 2);
+            let textArea_Height = (s.height - (_margin * 2)) / _singleLetterHeight;
             var renderText = textContent;
             var LetterWidthMaximum = null;
 
@@ -205,33 +108,6 @@ var Handle_text = {
 }
 
 
-document.getElementById('sss').onkeypress = function () {
-    _ResourceManager.clear();
-    Text2Diagram();
-
-
-}
-
-function Text2Diagram() {
-    var s = document.getElementById('sss').value;
-    //TODO: add pure text to diagram unit.
-    //Handle_text split lines.
-    //will return an array contain [abc, cde,  efg,]
-    s = Handle_text.lineSeperator(s);
-    s.reverse();
-    //Calculate level between each item.
-    //seperate by count space symbol
-    //will generate[node1,node2,node3,node4];
-    //node Structure:
-    //Level:parentNode / id : applyID / Sub-order : order in level;
-
-    s = t_NodeGenerator(s);
-    console.log(s);
-    
-    s.locationUpdate(10, 15);
-    s.draw();
 
 
 
-}
-document.getElementById('sss').value = 'level0\n-L1\n-L1\n--L2\n--L2_1\n\---L3\nL0\nL0';

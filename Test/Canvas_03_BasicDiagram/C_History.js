@@ -49,7 +49,8 @@ history.prototype.redo = function(){
  if(this.index >= this.historyStack.length){
      return;
  }
-    Load_(this.historyStack[this.index++]);
+ this.index++;
+    Load_(this.historyStack[this.index]);
 
 }
 
