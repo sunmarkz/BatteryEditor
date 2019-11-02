@@ -35,7 +35,7 @@ var Handle_text = {
     FrontKeywordsFilter: function (sourceText, keyword) {
         var _count = 0;
         var _text = sourceText;
-        if(_text instanceof String == false){
+        if(_text == null){
             return _text;
         }
         while (_text.indexOf(keyword) == 0) {
@@ -67,13 +67,10 @@ var Handle_text = {
         var s = graphic;
 
         if (textContent) {
-
-
             let textArea_Width = s.width - (_margin * 2);
             let textArea_Height = (s.height - (_margin * 2)) / _singleLetterHeight;
             var renderText = textContent;
             var LetterWidthMaximum = null;
-
 
             for (let i = 0; i < renderText.length; i++) {
                 if (i > textArea_Height - 1) {
@@ -106,8 +103,3 @@ var Handle_text = {
         }
     }
 }
-
-
-
-
-

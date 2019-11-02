@@ -10,7 +10,7 @@ Layer_.clear = function (){
     this.elements.clear();
     this.link.clear();
     this.elementSelection.clear();
-    
+
 }
 Layer_.push = function(s) {
 

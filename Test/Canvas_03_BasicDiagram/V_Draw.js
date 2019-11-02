@@ -41,9 +41,6 @@ function Draw(s, type = null) {
         s.graphic.draw();
         CanvStyle.Node();
     }
-    function dashLink(s) {
-
-    }
 
     function d_text(s) {
         

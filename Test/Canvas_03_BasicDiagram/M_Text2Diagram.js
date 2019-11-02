@@ -9,8 +9,6 @@ function Text2Diagram() {
     s.locationUpdate(10, 15);
     s.draw();
     Board.redraw();
-
-
 }
 
 const _startLocation = { x: 50, y: 50 };
@@ -111,3 +109,4 @@ t_Node.prototype.draw = function () {
     }
 
 }
+

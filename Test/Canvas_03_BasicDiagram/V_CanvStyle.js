@@ -1,5 +1,6 @@
 var CanvStyle = {
     SelectionBox: function () {
+        d.strokeStyle = 'grey';
 
         d.lineWidth = 2;
         d.fillStyle = "";
@@ -7,6 +8,7 @@ var CanvStyle = {
         d.stroke();
     },
     Element: function () {
+        d.strokeStyle = 'black';
 
         d.setLineDash([]);
         d.lineWidth = 3;
@@ -15,14 +17,18 @@ var CanvStyle = {
         d.stroke();
     },
 ElementSelected: function () {
+    d.strokeStyle = '#0066FF';
+
         d.lineWidth = 3;
         d.setLineDash([]);
-        d.fillStyle = "Grey";
+        d.fillStyle = "lightGrey";
         d.fill();
         d.stroke();
     },
 
 Node: function() {
+    d.strokeStyle = 'grey';
+
         d.lineWidth = 2;
         d.setLineDash([]);
         d.fillStyle = "white";
@@ -31,16 +37,19 @@ Node: function() {
     },
 
 Text: function() {
+    
     d.setLineDash([]);
     d.font = _singleLetterHeight+'px Calibri';
         d.fillStyle = 'black'
     },
 CtrlDot : function(){
+    d.strokeStyle = 'grey';
     d.setLineDash([]);
-    d.fillStyle = "blue";
+    d.fillStyle = '#0066FF';
     d.fill();
 },
 Link : function(){
+    d.strokeStyle = 'grey';
     d.setLineDash([]);
     d.lineWidth = 2;
     d.stroke();

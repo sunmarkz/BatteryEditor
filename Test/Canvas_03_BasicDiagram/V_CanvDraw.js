@@ -15,5 +15,15 @@ var CanvDraw = {
     t:function(t,x,y,width,height = _singleLetterHeight){
         
         d.fillText(t, x , y  , width,height);
+    },
+    pl : function (positionArray,closePath = true){
+        var _position = positionArray;
+        d.beginPath ();
+        d.moveTo(_position[0][0], _position[0][1]);
+        
+        for (let i = 1; i < (_position.length); i++) {
+            d.lineTo(_position[i][0],_position[i][1]);
+        }
+        closePath && d.closePath();
     }
 }
