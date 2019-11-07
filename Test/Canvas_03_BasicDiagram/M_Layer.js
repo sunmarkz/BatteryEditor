@@ -2,7 +2,6 @@ function ResourceManager (){
     this.elements = new Set();
     this.link = new Set();
     this.elementSelection = new Set();
-    
 }
 
 Layer_ = ResourceManager.prototype;

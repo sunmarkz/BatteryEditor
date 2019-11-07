@@ -95,7 +95,6 @@ var Handle_text = {
                             }
                         }
                     }
-
                     renderText.splice(i, 1, renderText[i].slice(0, LetterWidthMaximum), renderText[i].slice(LetterWidthMaximum));
                 }
             }

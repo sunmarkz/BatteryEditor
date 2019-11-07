@@ -76,19 +76,10 @@ Object.defineProperties(eBattery.prototype, {
             return this.graphic.right
         }
     }
-
-
 });
-
-
 
 eBattery.prototype.isOnControl = function (e) {
     if (this.node.left.isOnNode(e)) { return this.node.left; }
     if (this.node.right.isOnNode(e)) { return this.node.right; }
     return false;
 }
-
-
-
-
-
