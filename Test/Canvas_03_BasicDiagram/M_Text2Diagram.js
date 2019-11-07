@@ -110,3 +110,31 @@ t_Node.prototype.draw = function () {
 
 }
 
+var TextComparison = function (sourceText_splited, comparisonText_Splited){
+    let _changedIndex_begin = 0 ;
+    let _changedIndex_end = 0;
+
+    for (let i = 0; i < sourceText_splited.length; i++) {
+        const element = sourceText_splited[i];
+        if (element == comparisonText_Splited[i]){
+            _changedIndex_begin = i ;
+        }else{
+            break;
+        }
+    }
+    for (let j = sourceText_splited.length; j > _changedIndex_begin; j--) {
+        const element = sourceText_splited[j];
+        if(element == comparisonText_Splited[j]){
+            _changedIndex_end = j;
+        }else{
+            return;
+        }
+    }
+    
+    return[_changedIndex_begin,_changedIndex_end];
+    // 3 case:
+    // 1 left : content change;
+    // 0 left : deleted change;
+    // 2 left : added new line;
+
+}
