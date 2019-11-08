@@ -27,7 +27,6 @@ history.prototype.record = function () {
     this.historyStack[this.index] = Save_();
     this.historyStack.length = this.index+1;
     this.index++;
-    
     return;
 }
 

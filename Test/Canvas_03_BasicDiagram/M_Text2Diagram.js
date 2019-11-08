@@ -1,15 +1,14 @@
 
-function Text2Diagram() {
-    _ResourceManager.clear();
-    var s = inputTextarea.value;
-
-    s = Handle_text.lineSeperator(s);
-    s.reverse();
+function Text2Diagram(input) {
+    if(input ==null ){return;}
+    var s = input;
+    s = Handle_text.lineSeperator(s).reverse();
     s = t_NodeGenerator(s);
-    s.locationUpdate(10, 15);
-    s.draw();
+    s[0].locationUpdate(10, 15);
+    s[0].draw();
     Board.redraw();
 }
+
 
 const _startLocation = { x: 50, y: 50 };
 const _lineHeight = _singleLetterHeight;
@@ -55,14 +54,13 @@ t_Node.prototype.locationUpdate = function (Xstart, Ystart) {
 }
 
 function t_NodeGenerator(list) {
-
-    var s = list;
-    var _levelList = [];
+    let _tnodeChain = [];
+    let s = list;
+    let _levelList = [];
 
     for (let i = 0; i < s.length; i++) {
         var _item = s[i];
         var _node = new t_Node(_item);
-
         _levelList[_node.level + 1] && (_node.child = _levelList[_node.level + 1]);
 
         // childrens height;
@@ -78,6 +76,7 @@ function t_NodeGenerator(list) {
         _levelList[_node.level + 1] && delete _levelList[_node.level + 1];
         !_levelList[_node.level] && (_levelList[_node.level] = [])
         _levelList[_node.level].unshift(_node);
+        _tnodeChain.unshift(_node);
     }
 
     _levelList = _levelList.filter(function(x){
@@ -90,7 +89,7 @@ function t_NodeGenerator(list) {
     _startNode.y = 50;
     _startNode.child = _levelList[0];
 
-    return (_startNode);
+    return (_tnodeChain);
 
 }
 
@@ -130,6 +129,7 @@ var TextComparison = function (sourceText_splited, comparisonText_Splited){
             return;
         }
     }
+    console.log([_changedIndex_begin, _changedIndex_end]);
     
     return[_changedIndex_begin,_changedIndex_end];
     // 3 case:
@@ -138,3 +138,4 @@ var TextComparison = function (sourceText_splited, comparisonText_Splited){
     // 2 left : added new line;
 
 }
+

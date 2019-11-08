@@ -4,7 +4,6 @@
     .border {
         border-style: solid;
         border-color: black;
-
     }
 </style>
 
@@ -12,11 +11,11 @@
     <div id='bar'>
         <input type="file" id="files" />
         <input type="button" id="export" value="保存" />
-        
+
     </div>
     <canvas id="MyCanvas" stroke='black'>
     </canvas>
-    <textarea id = 'inputWindow' rows = '10' style = 'position: absolute; left: 800;' ></textarea>
+    <textarea id='inputWindow' rows='10' style='position: absolute; left: 800;'></textarea>
 </body>
 <script src="./V_CanvStyle.js"></script>
 <script src="./V_CanvDraw.js"></script>
@@ -63,22 +62,23 @@
         h = Canvas.height = (window.innerHeight - 22) * CanvQualityEnhanceVector;
         Bar.style.top = (window.innerHeight - 22 + 'px')
         inputTextarea.style.height = window.innerHeight;
-        inputTextarea.style.left = window.innerWidth/3*2;
-        inputTextarea.style.width = window.innerWidth>300 ? window.innerWidth/3 : 300;
+        inputTextarea.style.left = window.innerWidth / 3 * 2;
+        inputTextarea.style.width = window.innerWidth > 300 ? window.innerWidth / 3 : 300;
     }
 
     d = Canvas.getContext('2d');
-     // initial text, otherwise textmeasure will not correct
+    // initial text, otherwise textmeasure will not correct
 
     inputTextarea.value = 'level0\n-L1\n-L1\n--L2\n--L2_1\n\---L3\nL0\nL0';
-
+    
     InitialAll();
-    Text2Diagram();
+    Text2Diagram(inputTextarea.value);
     inputTextarea.onkeyup = function () {
-            InitialAll();
-            Text2Diagram();
-        }
-        
+        // InitialAll();
+        _ResourceManager.clear();
+        Text2Diagram(inputTextarea.value);
+    }
+
 </script>
 
 </html>
